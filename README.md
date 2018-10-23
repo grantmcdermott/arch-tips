@@ -43,10 +43,24 @@ I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.
 
 ## GPU / NVIDIA CUDA
 
-My laptop (Dell Precision 9570) comes with a hybrid graphics system. I initially tried to get CUDA support going by installing the nvida package from the Arch repositories... Which turned out to be a mistake!The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu. **Solution:** Boot directly into the shell and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and reboot as normal.
+My laptop (Dell Precision 9570) comes with a hybrid graphics system. I initially tried to get CUDA support going by installing the nvida package from the Arch repositories... Which turned out to be a mistake!The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu. 
+
+**Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and 
+reboot as normal ("CTR-ALT-DEL").
 
 ## Miscellaneous
 
 ### Printing
 
 My home printer had been found automatically at first. However, I couldn't find it after a while for some reason. Adding it manually was a pain, because I didn't have the correct permissions in CUPS. (Adding myself to the "cups" user group didn't work either.) I solved the problem by following [these instructions](https://kernelmastery.com/enable-regular-users-to-add-printers-to-cups/).
+
+### Wi-fi from Shell/TTY
+
+Relevant to cases where you need to log into the Shell/TTY to fix some hanging/freeze problem (e.g. CUDA/NVIDIA above). The easiest way I've found is to use `nmcli` (command line version of network manger). To see the available SSIDs type
+```
+nmcli dev wifi
+```
+Then connect with
+```
+nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
+```
