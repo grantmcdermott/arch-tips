@@ -64,3 +64,21 @@ Then connect with
 ```
 nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
 ```
+
+### HiDPI
+
+The Arch wiki has the goods here. One thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
+```
+pac install terminus-font
+```
+You can then see the set of available fonts by typing `ls /usr/share/kbd/console`. To temporarily test out a larger font, type
+```
+setfont ter-132n
+```
+(Type `showconsolefont` if you want to see a table of the font's glyphs and letters).
+
+To set this font permanently, open `/etc/vconsole.conf` with nano and add
+```
+FONT=ter-132n
+```
+
