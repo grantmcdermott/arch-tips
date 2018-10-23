@@ -65,6 +65,14 @@ Then connect with
 nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
 ```
 
+### Starting Gnome session from Shell/TTY
+
+Similar rational to the above:
+```
+XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
+```
+
+
 ### HiDPI
 
 The Arch wiki has the goods here. One thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
