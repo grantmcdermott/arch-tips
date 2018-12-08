@@ -48,6 +48,19 @@ My laptop (Dell Precision 9570) comes with a hybrid graphics system. I initially
 **Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and 
 reboot as normal ("CTR-ALT-DEL").
 
+**Update:** After some package updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a Antergos forum question about this.
+
+**Update 2:** Added "nouveau.modeset=0" to the [kernel boot parameters](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) as per various online suggestions: 
+```
+sudo nano /etc/default/grub
+```
+Add "nouveau.modeset=0" to the GRUB\_CMDLINE\_LINUX\_DEFAULT variable. Then CTL+X and "y" to save. Re-generate the grub.cfg file:
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg 
+```
+
+This solves the log-in and hibernate problem... but only for Xorg. In other words, now my Wayland session(s) have disappeared! 
+
 ## Miscellaneous
 
 ### Printing
@@ -70,6 +83,11 @@ nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
 Similar rational to the above:
 ```
 XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
+```
+
+Alternatively, launch via GDM: 
+```
+sudo systemctl start gdm
 ```
 
 
