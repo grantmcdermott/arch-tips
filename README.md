@@ -47,12 +47,12 @@ I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.
 
 ## GPU / NVIDIA CUDA
 
-My laptop (Dell Precision 9570) comes with a hybrid graphics system. I initially tried to get CUDA support going by installing the nvida package from the Arch repositories... Which turned out to be a mistake!The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu. 
+My laptop (Dell Precision 9570) comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake!The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu. 
 
 **Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and 
 reboot as normal ("CTR-ALT-DEL").
 
-**Update:** After some package updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a Antergos forum question about this.
+**Update:** After some package and system updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a question on the [Antergos forum](https://forum.antergos.com/topic/11077/blank-screen-after-log-in-nvidia-issue) about this.
 
 **Update 2:** Added "nouveau.modeset=0" to the [kernel boot parameters](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) as per various online suggestions: 
 ```
@@ -64,6 +64,24 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 This solves the log-in and hibernate problem... but only for Xorg. In other words, now my Wayland session(s) have disappeared! 
+
+**Update 3:**
+
+Have tried various fixes in the interim, including removing KDE/Plasma entirely in case there were some sytem conflicts with Gnome. I also tried removing the folder `~/.config/gnome-session` as per [this thread](https://bbs.archlinux.org/viewtopic.php?pid=1708172#p1708172). Didn't work. In fact, it turns out that the issue of GDM not being able to recognize Wayland sessions is common. Here are some relevant threads: [1](https://bbs.archlinux.org/viewtopic.php?id=225477), [2](https://www.reddit.com/r/archlinux/comments/823ye9/wayland_with_gnome/), [3](https://www.reddit.com/r/archlinux/comments/89vkwq/gnomegdm_issue_no_wayland_session/), [4](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/). Will read through these various threads and try different options.
+
+**Update 4:** Solved! Thanks to [this](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/) suggestion, I needed to enable early KMS start. (Basically, my laptop is too fast for its own good.) The full solution then is to disable modesetting for the Nouveau driver (see **Update 2** above) and then enable early KMS start for the integrated Intel GPU, by adding following Intel modules to `/etc/mkinitcpio.conf`:
+```
+/etc/mkinitcpio.conf
+---
+MODULES=(intel_agp i915)
+```
+
+Once that's done, regenerate initramfs:
+```
+sudo mkinitcpio -p linux
+```
+
+Reboot and I can now log directly into Gnome Wayland from GDM.
 
 ## Miscellaneous
 
