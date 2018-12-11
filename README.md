@@ -6,20 +6,24 @@ Change and customization log on my Antergos linux system
 
 ### UEFI stuff
 
-Follow the [Arch wiki](https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#UEFI){:target="_blank"}. Basically (1) switch SATA mode from RAID to ACHI, (2) disable secure boot, and (3) change fastboot to "Through" in "Post behaviour". Not sure that this last step is needed. I also enabled legacy BIOS drivers, since my system was having trouble reading the live USB.
+Follow the [Arch wiki](https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#UEFI). Basically (1) switch SATA mode from RAID to ACHI, (2) disable secure boot, and (3) change fastboot to "Through" in "Post behaviour". Not sure that this last step is needed. I also enabled legacy BIOS drivers, since my system was having trouble reading the live USB.
+
+### Home folder on separate partition
+
+I think this was an option on the original install media, but I somehow missed it. At any rate, creating this after the fact was relatively easy. I first created a GParted Live USB (download the ISO image [here](https://gparted.org/liveusb.php) and flash with Etcher). This was a lot quicker than creating a live USB of an entire distro and I only needed to resize some partitions anyway. From here, there are various guides (e.g. [here](https://help.ubuntu.com/community/Partitioning/Home/Moving) and [here](https://www.maketecheasier.com/move-home-folder-ubuntu/)) and I just followed along. FWIW, keeping your home directory on a separate partition is probably safer and also makes [distro hopping](https://www.maketecheasier.com/switch-between-linux-distros-without-losing-data/) easier.
 
 ## Touchpad
 
-The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad*) didn't seem to last and kept reverting back to the default behaviour. So I [installed](https://wiki.archlinux.org/index.php/Libinput#Installation){:target="_blank"} `libinput` and then followed the final section of [this guide](https://www.dell.com/support/article/us/en/04/sln308258/precision-xps-ubuntu-general-touchpad-mouse-issue-fix?lang=en){:target="_blank"} (See Fig. 7) to get tapping, right-click two finger tap, etc. working.
+The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad*) didn't seem to last and kept reverting back to the default behaviour. So I [installed](https://wiki.archlinux.org/index.php/Libinput#Installation) `libinput` and then followed the final section of [this guide](https://www.dell.com/support/article/us/en/04/sln308258/precision-xps-ubuntu-general-touchpad-mouse-issue-fix?lang=en) (See Fig. 7) to get tapping, right-click two finger tap, etc. working.
 
 
 ## Data science setup
 
-I followed (most of) the tips on Patrick Schratz' [exellent guide](https://github.com/pat-s/antergos_setup_guide){:target="_blank"}. I also made the following changes in addition to that.
+I followed (most of) the tips on Patrick Schratz' [exellent guide](https://github.com/pat-s/antergos_setup_guide). I also made the following changes in addition to that.
 
 ### Set common *R* library path
 
-Adapting [this](https://stackoverflow.com/questions/44861967/r-3-4-1-single-candle-personal-library-path-error-unable-to-create-na/44903158#44903158){:target="_blank"} SO post answer, I set a system wide library path as follows:
+Adapting [this](https://stackoverflow.com/questions/44861967/r-3-4-1-single-candle-personal-library-path-error-unable-to-create-na/44903158#44903158) SO post answer, I set a system wide library path as follows:
 ```
 sudo groupadd rusers
 sudo gpasswd -a grant rusers
@@ -34,7 +38,7 @@ R_LIBS_USER=/usr/lib/R/library ## Or whatever location you get by typing ".libPa
 
 ## conda
 
-I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations){:target="_blank"} Miniconda3 using bash before I switched over to the zsh shell. As a result (or perhaps it's required no matter when you switch over to zsh), I had to [add the Miniconda directory to the zsh PATH environment variable](https://stackoverflow.com/a/35246794){:target="_blank"}
+I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations) Miniconda3 using bash before I switched over to the zsh shell. As a result (or perhaps it's required no matter when you switch over to zsh), I had to [add the Miniconda directory to the zsh PATH environment variable](https://stackoverflow.com/a/35246794).
 
 ```
 > echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> .zshrc
