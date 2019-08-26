@@ -29,7 +29,7 @@ sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclude
 
 ## Data science setup
 
-I followed (most of) the tips on Patrick Schratz' [exellent guide](https://github.com/pat-s/antergos_setup_guide). I also made the following changes in addition to that.
+I followed (most of) the tips on Patrick Schratz' [exellent guide](https://pjs-web.de/post/arch-install-guide-for-r/). I also made the following changes in addition to that.
 
 ### Set common *R* library path
 
