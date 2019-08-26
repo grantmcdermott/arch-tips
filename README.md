@@ -1,6 +1,6 @@
-# Antergos tips
+# Arch linux tips
 
-Change and customization log on my Antergos linux system
+Change and customization log on my Arch (Antergos) Linux system
 
 ## Installation
 
@@ -57,7 +57,7 @@ I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.
 
 ## GPU / NVIDIA CUDA
 
-My laptop (Dell Precision 9570) comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake!The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu.
+My laptop (Dell Precision 9570) comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake! The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu.
 
 **Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and
 reboot as normal ("CTR-ALT-DEL").
@@ -93,6 +93,14 @@ sudo mkinitcpio -p linux
 
 Reboot and I can now log directly into Gnome Wayland from GDM.
 
+
+## Removing Antergos
+
+Following the resolution of the Antergos Project, I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system. 
+
+In related news, [Endeavour OS](https://endeavouros.com/) has picked up where Antergos left off and looks really cool.
+
+
 ## Miscellaneous
 
 ### Printing
@@ -112,7 +120,7 @@ nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
 
 ### Starting Gnome session from Shell/TTY
 
-Similar rational to the above:
+Similar rationale to the above:
 ```
 XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
 ```
