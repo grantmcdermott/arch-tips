@@ -96,7 +96,7 @@ Reboot and I can now log directly into Gnome Wayland from GDM.
 
 ## Removing Antergos
 
-Following the resolution of the Antergos Project, I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system. 
+Following the [resolution of the Antergos Project](https://antergos.com/blog/antergos-linux-project-ends/), I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system. 
 
 In related news, [Endeavour OS](https://endeavouros.com/) has picked up where Antergos left off and looks really cool.
 
