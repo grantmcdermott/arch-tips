@@ -147,3 +147,26 @@ To set this font permanently, open `/etc/vconsole.conf` with nano and add
 ```
 FONT=ter-132n
 ```
+
+### Manually compile a package from source with edited PKGBUILD (Julia example)
+
+I installed [Julia](https://julialang.org/) via the Arch community repos. However, a build problem cropped up when upgrading to Julia 1.2.0; see [bug report](https://bugs.archlinux.org/task/63536?project=5&string=julia) and [GitHub issue](https://github.com/JuliaLang/julia/issues/33038). I should probably have taken this as a sign to install the official Julia binaries instead. (Yes, I am aware that this is actually the [recommended approach](https://julialang.org/downloads/platform.html).) However, this seemed a good chance to practice compiling a package from the community repos with an edited PKGBUILD. There's suprisingly little guidance about this online, although [this Manjaro forum thread](https://forum.manjaro.org/t/how-to-install-pkgbuild-file-downloaded-manually/69365/2) proved very helpful. My full steps as follows:
+
+1. Create some folder to download the relevant files to.  I used `~/julia` but I don't think the location really matters.
+```
+$ mkdir ~/julia
+$ cd ~/julia
+```
+2. Download/create the [PKBUILD and ancilliary files](https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/julia) to this location. There may be a smart way to to this automatically, but I just created the files manually using nano+copy+paste.
+3. Edit the PKGBUILD (and any other files) as needed.
+3. Build the package. This will take a while. Note: Using regular `$ makepkg -si` gave me errors. So instead I used:
+```
+$ makepkg -g >> PKGBUILD
+#$ makepkg ## Give GPG verification error. Fix that below:
+$ gpg --recv-key 66E3C7DC03D6E495 ## Add GPG key
+$ makepkg ## NB: Don't use sudo!
+```
+4. Install the **pkg.tar** file. Be careful not to confuse with any of the other .tar files lying around in the same directory.
+```
+$ sudo pacman -U julia-2:1.2.0-1-x86_64.pkg.tar 
+```
