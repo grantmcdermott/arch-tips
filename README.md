@@ -1,4 +1,4 @@
-# Arch linux tips
+# Arch Linux tips
 
 Change and customization log on my Arch (Antergos) Linux system
 
