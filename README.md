@@ -159,14 +159,18 @@ $ cd ~/julia
 ```
 2. Download/create the [PKBUILD and ancilliary files](https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/julia) to this location. There may be a smart way to to this automatically, but I just created the files manually using nano+copy+paste.
 3. Edit the PKGBUILD (and any other files) as needed.
-3. Build the package. This will take a while. Note: Using regular `$ makepkg -si` gave me errors. So instead I used:
+4. Build the package. This will take a while. Note: Using regular `$ makepkg -si` gave me errors. So instead I used:
 ```
 $ makepkg -g >> PKGBUILD
-#$ makepkg ## Give GPG verification error. Fix that below:
+#$ makepkg ## Gives GPG verification error. Fix that below first:
 $ gpg --recv-key 66E3C7DC03D6E495 ## Add GPG key
 $ makepkg ## NB: Don't use sudo!
 ```
-4. Install the **pkg.tar** file. Be careful not to confuse with any of the other .tar files lying around in the same directory.
+5. Install the **pkg.tar** file. Be careful not to confuse with any of the other .tar files lying around in the same directory.
 ```
 $ sudo pacman -U julia-2:1.2.0-1-x86_64.pkg.tar 
+```
+6. The updated version of Julia was now ready to go:
+```
+$ julia
 ```
