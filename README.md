@@ -55,6 +55,14 @@ I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.
 > source ~/.zshrc ## Or you can just close and reopen the shell
 ```
 
+## Julia
+
+There's a distributed version of Julia via the Arch community repos, but I eventually switched to using the official Julia binaries instead as is [recommended](https://julialang.org/downloads/platform.html). To take the pain out managing subsquent versions and updates, I used the handy [JILL](https://github.com/abelsiqueira/jill) script:
+
+```
+sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
+```
+
 ## GPU / NVIDIA CUDA
 
 My laptop (Dell Precision 9570) comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake! The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu.
@@ -96,7 +104,7 @@ Reboot and I can now log directly into Gnome Wayland from GDM.
 
 ## Removing Antergos
 
-Following the [resolution of the Antergos Project](https://antergos.com/blog/antergos-linux-project-ends/), I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system. 
+Following the [resolution of the Antergos Project](https://antergos.com/blog/antergos-linux-project-ends/), I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system.
 
 In related news, [Endeavour OS](https://endeavouros.com/) has picked up where Antergos left off and looks really cool.
 
@@ -150,7 +158,7 @@ FONT=ter-132n
 
 ### Manually compile a package from source with edited PKGBUILD (Julia example)
 
-I installed [Julia](https://julialang.org/) via the Arch community repos. However, a build problem cropped up when upgrading to Julia 1.2.0; see [bug report](https://bugs.archlinux.org/task/63536?project=5&string=julia) and [GitHub issue](https://github.com/JuliaLang/julia/issues/33038). I should probably have taken this as a sign to install the official Julia binaries instead. (Yes, I am aware that this is actually the [recommended approach](https://julialang.org/downloads/platform.html).) However, this seemed a good chance to practice compiling a package from the community repos with an edited PKGBUILD. There's suprisingly little guidance about this online, although [this Manjaro forum thread](https://forum.manjaro.org/t/how-to-install-pkgbuild-file-downloaded-manually/69365/2) proved very helpful. My full steps as follows:
+I initally installed [Julia](https://julialang.org/) via the Arch community repos. However, a build problem cropped up when upgrading to Julia 1.2.0; see [bug report](https://bugs.archlinux.org/task/63536?project=5&string=julia) and [GitHub issue](https://github.com/JuliaLang/julia/issues/33038). I ultimately took this as a sign to install the official Julia binaries instead. (See [above](#julia).) However, this also seemed like a good chance to practice compiling a package from the community repos with an edited PKGBUILD. There's suprisingly little guidance about this online, although [this Manjaro forum thread](https://forum.manjaro.org/t/how-to-install-pkgbuild-file-downloaded-manually/69365/2) proved very helpful. My full steps as follows:
 
 1. Create some folder to download the relevant files to.  I used `~/julia` but I don't think the location really matters.
 ```
@@ -168,7 +176,7 @@ $ makepkg ## NB: Don't use sudo!
 ```
 5. Install the **pkg.tar** file. Be careful not to confuse with any of the other .tar files lying around in the same directory.
 ```
-$ sudo pacman -U julia-2:1.2.0-1-x86_64.pkg.tar 
+$ sudo pacman -U julia-2:1.2.0-1-x86_64.pkg.tar
 ```
 6. The updated version of Julia was now ready to go:
 ```
