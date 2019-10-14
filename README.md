@@ -1,6 +1,6 @@
 # Arch Linux tips
 
-Change and customization log on my Arch (Antergos) Linux system
+Change and customization log on my Arch Linux system
 
 ## Installation
 
@@ -19,7 +19,7 @@ The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad
 
 ## Backup
 
-Very easy with rsync. These [this video](https://www.youtube.com/watch?v=oS5uH0mzMTg).
+Very easy with rsync. See [this video](https://www.youtube.com/watch?v=oS5uH0mzMTg).
 
 ```
 bash ## zsh doesn't work for some reason
@@ -65,41 +65,58 @@ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/
 
 ## GPU / NVIDIA CUDA
 
-My laptop (Dell Precision 9570) comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake! The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu.
+My Dell Precision 9570 laptop comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. After various steps and misteps trying to install the NVIDIA drivers, I finally got everything working thanks to [this outstanding guide](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570#Manually_loading/unloading_NVIDIA_module) on the Arch wiki. (Which, in turn, is based on this [this community thread](https://bbs.archlinux.org/viewtopic.php?pid=1826641#p1826641).). Some high level remarks:
 
-**Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and
-reboot as normal ("CTR-ALT-DEL").
+- The NVIDIA GPU and drivers only appear to work well on the Xorg session. Wayland performance is still shaky, or not even supported AFAIK.
+   - A side problem with this is that scaling on my HiDPI screen is better on Wayland. However, I managed to resolve this --- more or less --- here.)
+- The way the setup works is that the discrete NVIDIA GPU is switched off by default when the computer boots up to save battery life, etc.
+- To turn it on, I just need to run a simple shell script that I've saved to my home directory.
 
-**Update:** After some package and system updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a question on the [Antergos forum](https://forum.antergos.com/topic/11077/blank-screen-after-log-in-nvidia-issue) about this.
-
-**Update 2:** Added "nouveau.modeset=0" to the [kernel boot parameters](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) as per various online suggestions:
 ```
-sudo nano /etc/default/grub
-```
-Add "nouveau.modeset=0" to the GRUB\_CMDLINE\_LINUX\_DEFAULT variable. Then CTL+X and "y" to save. Re-generate the grub.cfg file:
-```
-sudo grub-mkconfig -o /boot/grub/grub.cfg
+~$ sudo bash enablegpu.sh ## 'sudo bash disablegpu.sh' to turn off. Or, just shut down.
+~$ nvidia-smi ## Optional: confirm that the NVIDIA card has been enabled
 ```
 
-This solves the log-in and hibernate problem... but only for Xorg. In other words, now my Wayland session(s) have disappeared!
+As noted above, my working NVIDIA setup only came after various misteps. And the "solution" to these misteps was basically just to keep the discrete GPU switched off at all times. Thankfully, the real solution was easy enough thanks to the Arch wiki guide. Still, for posterity and since I learned a lot from working through these steps, the old changelog is under the fold...
 
-**Update 3:**
+<details>
+  <summary>Old NIVIA changelog </summary>
+   I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake! The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu.
 
-Have tried various fixes in the interim, including removing KDE/Plasma entirely in case there were some sytem conflicts with Gnome. I also tried removing the folder `~/.config/gnome-session` as per [this thread](https://bbs.archlinux.org/viewtopic.php?pid=1708172#p1708172). Didn't work. In fact, it turns out that the issue of GDM not being able to recognize Wayland sessions is common. Here are some relevant threads: [1](https://bbs.archlinux.org/viewtopic.php?id=225477), [2](https://www.reddit.com/r/archlinux/comments/823ye9/wayland_with_gnome/), [3](https://www.reddit.com/r/archlinux/comments/89vkwq/gnomegdm_issue_no_wayland_session/), [4](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/). Will read through these various threads and try different options.
+   **Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and
+   reboot as normal ("CTR-ALT-DEL").
 
-**Update 4:** Solved! Thanks to [this](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/) suggestion, I needed to enable early KMS start. (Basically, my laptop is too fast for its own good.) The full solution then is to disable modesetting for the Nouveau driver (see **Update 2** above) and enable early KMS start for the integrated Intel GPU, by adding following Intel modules to `/etc/mkinitcpio.conf`:
-```
-/etc/mkinitcpio.conf
----
-MODULES=(intel_agp i915)
-```
+   **Update:** After some package and system updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a question on the [Antergos forum](https://forum.antergos.com/topic/11077/blank-screen-after-log-in-nvidia-issue) about this.
 
-Once that's done, regenerate initramfs:
-```
-sudo mkinitcpio -p linux
-```
+   **Update 2:** Added "nouveau.modeset=0" to the [kernel boot parameters](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) as per various online suggestions:
+   ```
+   sudo nano /etc/default/grub
+   ```
+   Add "nouveau.modeset=0" to the GRUB\_CMDLINE\_LINUX\_DEFAULT variable. Then CTL+X and "y" to save. Re-generate the grub.cfg file:
+   ```
+   sudo grub-mkconfig -o /boot/grub/grub.cfg
+   ```
 
-Reboot and I can now log directly into Gnome Wayland from GDM.
+   This solves the log-in and hibernate problem... but only for Xorg. In other words, now my Wayland session(s) have disappeared!
+
+   **Update 3:** Have tried various fixes in the interim, including removing KDE/Plasma entirely in case there were some sytem conflicts with Gnome. I also tried removing the folder `~/.config/gnome-session` as per [this thread](https://bbs.archlinux.org/viewtopic.php?pid=1708172#p1708172). Didn't work. In fact, it turns out that the issue of GDM not being able to recognize Wayland sessions is common. Here are some relevant threads: [1](https://bbs.archlinux.org/viewtopic.php?id=225477), [2](https://www.reddit.com/r/archlinux/comments/823ye9/wayland_with_gnome/), [3](https://www.reddit.com/r/archlinux/comments/89vkwq/gnomegdm_issue_no_wayland_session/), [4](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/). Will read through these various threads and try different options.
+
+   **Update 4:** Solved! Thanks to [this](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/) suggestion, I needed to enable early KMS start. (Basically, my laptop is too fast for its own good.) The full solution then is to disable modesetting for the Nouveau driver (see **Update 2** above) and enable early KMS start for the integrated Intel GPU, by adding following Intel modules to `/etc/mkinitcpio.conf`:
+   ```
+   /etc/mkinitcpio.conf
+   ---
+   MODULES=(intel_agp i915)
+   ```
+
+   Once that's done, regenerate initramfs:
+   ```
+   sudo mkinitcpio -p linux
+   ```
+
+   Reboot and I can now log directly into Gnome Wayland from GDM.
+
+</details>
+
 
 
 ## Removing Antergos
