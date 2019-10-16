@@ -48,12 +48,32 @@ R_LIBS_USER=/usr/lib/R/library ## Or whatever location you get by typing ".libPa
 
 ## conda
 
+### Add conda to path (if changing shells after installation)
+
 I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations) Miniconda3 using bash before I switched over to the zsh shell. As a result (or perhaps it's required no matter when you switch over to zsh), I had to [add the Miniconda directory to the zsh PATH environment variable](https://stackoverflow.com/a/35246794).
 
+```shell
+$ echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> .zshrc
+$ source ~/.zshrc ## Or you can just close and reopen the shell
 ```
-> echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> .zshrc
-> source ~/.zshrc ## Or you can just close and reopen the shell
+
+### conda environments
+
+To activate conda environments, one first need to initiliase this capability for your particular shell (zsh, fish, etc.). However, this has the undesirable effect of automatically activating the previous conda env whenever you open the shell, regardless of whether you want to use conda or not. Luckily there's a pretty simple [solution](https://stackoverflow.com/a/54560785/4115816):
+
+```shell
+$ conda init zsh ## Initialise. Then log out and then back in.
+$ conda config --set auto_activate_base false ## Stop automatic activation.
 ```
+
+Once that's done, it's easy to activate and switch between environments
+
+```shell
+$ conda info --envs ## list all environments
+$ conda activate tf_gpu ## activate the "tf_gpu" environment
+$ conda deactivate
+```
+
 
 ## Julia
 
@@ -68,7 +88,7 @@ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/
 My Dell Precision 9570 laptop comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. After various steps and misteps trying to install the NVIDIA drivers, I finally got everything working thanks to [this outstanding guide](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570#Manually_loading/unloading_NVIDIA_module) on the Arch wiki. (Which, in turn, is based on this [this community thread](https://bbs.archlinux.org/viewtopic.php?pid=1826641#p1826641).). Some high level remarks:
 
 - The NVIDIA GPU and drivers only appear to work well on the Xorg session. Wayland performance is still shaky, or not even supported AFAIK.
-   - A side problem with this is that scaling on my HiDPI screen is better on Wayland. However, I managed to resolve this --- more or less --- here.)
+   - A side problem with this is that scaling on my HiDPI screen is better on Wayland. However, I managed to resolve this &mdash; more or less &mdash; [here.](https://github.com/grantmcdermott/arch-tips#hidpi))
 - The way the setup works is that the discrete NVIDIA GPU is switched off by default when the computer boots up to save battery life, etc.
 - To turn it on, I just need to run a simple shell script that I've saved to my home directory.
 
@@ -157,6 +177,18 @@ sudo systemctl start gdm
 
 
 ### HiDPI
+
+After installing the NVIDIA drivers and CUDA directly on Arch (see below), I also installed the C
+Having successfully connected to my NVIDIA card, I then proceeded to install CUDA directly on my system via the Arch repos. I also installed a version (multiple versions, in fact) through conda, as detailed above.
+For R-Julia interoperability, I use the [RCall](http://juliainterop.github.io/RCall.jl/stable/index.html) and [JuliaCall](https://non-contradiction.github.io/JuliaCall/index.html) packages, respectively. However, I ran into a (documented) error related to libstdc.so being outdated (libstdc++6.so is required by Rcpp among other libraries). A [temporary solution ](https://github.com/Non-Contradiction/JuliaCall/issues/1) is to direct Julia to the newer library path with `export` in each new session, but a more permanent solution is to add them to my `/etc/environment` file.
+```
+# GM: Adding manually for R-Julia interoperability
+# See: https://github.com/Non-Contradiction/JuliaCall/issues/110
+JLIB=/opt/julias/julia-1.2.0/lib
+LD_LIBRARY_PATH=$JLIB
+R_LD_LIBRARY_PATH="$(R RHOME)/lib:$JLIB"
+```
+You need to log out and back in again for the settings to take hold.
 
 The Arch wiki has the goods here. One thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
 ```
