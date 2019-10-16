@@ -59,9 +59,9 @@ $ sudo bash enablegpu.sh ## 'sudo bash disablegpu.sh' to turn off. Or, just shut
 $ nvidia-smi ## Optional: confirm that the NVIDIA card has been enabled
 ```
 
-**Tip:** To monitor GPU use and performance (a la `htop`), run `$ watch -n 1 nvidia-smi`. Or you can install the [`gpustat`](https://github.com/wookayin/gpustat) command line utility.
+**Tip:** To monitor GPU use and performance (a la `htop`), run `$ watch -n 1 nvidia-smi`. Or, you can install the [gpustat](https://github.com/wookayin/gpustat) command line utility and ran `$ gpustat -i`.
 
-With the NVIDIA chip working, it's fairly straightforward to set up a GPU-enabled deep-learning environment.
+With the NVIDIA chip working, it's now fairly straightforward to set up a GPU-enabled deep-learning environment (see [here](https://github.com/grantmcdermott/arch-tips#gpu-enabled-deep-learning-tensorflow-cuda-etc)).
 
 PS &mdash; As noted above, my working NVIDIA setup only came after various misteps. And the "solution" to these misteps back then was basically just to keep the discrete GPU switched off at all times. Thankfully, the real solution was easy enough thanks to the Arch wiki guide. Still, for posterity and since I learned a lot from working through these steps, the old changelog is under the fold...
 
