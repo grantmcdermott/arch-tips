@@ -258,18 +258,6 @@ $ sudo systemctl start gdm
 
 ### HiDPI
 
-After installing the NVIDIA drivers and CUDA directly on Arch (see below), I also installed the C
-Having successfully connected to my NVIDIA card, I then proceeded to install CUDA directly on my system via the Arch repos. I also installed a version (multiple versions, in fact) through conda, as detailed above.
-For R-Julia interoperability, I use the [RCall](http://juliainterop.github.io/RCall.jl/stable/index.html) and [JuliaCall](https://non-contradiction.github.io/JuliaCall/index.html) packages, respectively. However, I ran into a (documented) error related to libstdc.so being outdated (libstdc++6.so is required by Rcpp among other libraries). A [temporary solution ](https://github.com/Non-Contradiction/JuliaCall/issues/1) is to direct Julia to the newer library path with `export` in each new session, but a more permanent solution is to add them to my `/etc/environment` file.
-```
-# GM: Adding manually for R-Julia interoperability
-# See: https://github.com/Non-Contradiction/JuliaCall/issues/110
-JLIB=/opt/julias/julia-1.2.0/lib
-LD_LIBRARY_PATH=$JLIB
-R_LD_LIBRARY_PATH="$(R RHOME)/lib:$JLIB"
-```
-You need to log out and back in again for the settings to take hold.
-
 The Arch wiki has the goods here. One thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
 ```sh
 $ pac install terminus-font
