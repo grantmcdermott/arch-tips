@@ -2,6 +2,28 @@
 
 Change and customization log on my Arch Linux system
 
+<!-- TOC depthFrom:2 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Installation](#installation)
+	- [UEFI stuff](#uefi-stuff)
+	- [Home folder on separate partition](#home-folder-on-separate-partition)
+- [Backup](#backup)
+- [Data science setup](#data-science-setup)
+	- [R](#r)
+	- [conda (Python)](#conda-python)
+	- [Julia](#julia)
+	- [GPU / NVIDIA CUDA](#gpu-nvidia-cuda)
+- [Removing Antergos](#removing-antergos)
+- [Miscellaneous](#miscellaneous)
+	- [Printing](#printing)
+	- [Wi-fi from Shell/TTY](#wi-fi-from-shelltty)
+	- [Starting Gnome session from Shell/TTY](#starting-gnome-session-from-shelltty)
+	- [HiDPI](#hidpi)
+	- [Manually compile a package from source with edited PKGBUILD (Julia example)](#manually-compile-a-package-from-source-with-edited-pkgbuild-julia-example)
+	- [Touchpad](#touchpad)
+
+<!-- /TOC -->
+
 ## Installation
 
 ### UEFI stuff
@@ -23,9 +45,11 @@ $ sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclu
 
 ## Data science setup
 
-I followed (most of) the tips on Patrick Schratz' [exellent guide](https://pjs-web.de/post/arch-install-guide-for-r/). I also made the following changes in addition to that.
+I followed (most of) the tips on Patrick Schratz' [outstanding guide](https://pjs-web.de/post/arch-install-guide-for-r/). His setup is tailored to R and spatial analysis, which covers my major needs. However, I also made the following changes in addition to his suggestions (including notes on some other lanaguages).
 
-### Set common *R* library path
+### R
+
+#### Set common *R* library path
 
 Adapting [this](https://stackoverflow.com/questions/44861967/r-3-4-1-single-candle-personal-library-path-error-unable-to-create-na/44903158#44903158) SO post answer, I set a system wide library path as follows:
 
@@ -37,24 +61,34 @@ $ sudo chown grant:rusers -R R/
 $ sudo chmod -R 775 R/
 ```
 
-Once that's done, tell *R* to make this shared library path the default for your user, by adding the following line to your `~/.Renviron` file:
+Once that's done, tell *R* to make this shared library path the default for your user, by adding it to your `~/.Renviron` file:
 
+```sh
+$ echo 'R_LIBS_USER=/usr/lib/R/library' >>  ~/.Renviron
 ```
-R_LIBS_USER=/usr/lib/R/library ## Or whatever location you get by typing ".libPaths()" in your R console
+
+#### Compile R packages in parallel
+
+Reinstallation of R packages is already much quicker thanks to ccache (again, see Patrick's [guide](https://pjs-web.de/post/arch-install-guide-for-r/#ccache)). However, I also enabled parallel compilation of R packages to speed up first-time installation, as well as any further compiling that needs to be done.
+
+```sh
+echo 'options(Ncpus=parallel::detectCores())' >> ~/.Rprofile
 ```
 
-## conda
+### conda (Python)
 
-### Add conda to path (if changing shells after installation)
+Following [Jake Vanderplas](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations), I opted for Miniconda instead of the full-blown Anaconda install.
 
-I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations) Miniconda3 using bash before I switched over to the zsh shell. As a result (or perhaps it's required no matter when you switch over to zsh), I had to [add the Miniconda directory to the zsh PATH environment variable](https://stackoverflow.com/a/35246794).
+#### Add conda to path (if changing shells after installation)
+
+In most cases, your conda environment should automatically get added to your PATH. However I installed Miniconda3 using bash before switching over to the zsh shell. As a result, I had to add the Miniconda directory to the zsh PATH environment variable (see [here](https://stackoverflow.com/a/35246794)).
 
 ```sh
 $ echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> .zshrc
 $ source ~/.zshrc ## Or you can just close and reopen the shell
 ```
 
-### conda environments
+#### conda environments
 
 To activate conda environments, one first need to initiliase this capability for your particular shell (zsh, fish, etc.). However, this has the undesirable effect of automatically activating the previous conda env whenever you open the shell, regardless of whether you want to use conda or not. Luckily there's a pretty simple [solution](https://stackoverflow.com/a/54560785/4115816):
 
@@ -71,7 +105,7 @@ $ conda activate tf_gpu ## activate the "tf_gpu" environment
 $ conda deactivate
 ```
 
-### Add channels
+#### Add channels
 
 Necessary, for example, when I wanted to add the Apache Arrow C++ module from Conda Forge
 
@@ -80,7 +114,7 @@ $ conda config --add channels conda-forge
 $ conda config --set channel_priority strict
 ```
 
-## Julia
+### Julia
 
 There's a distributed version of Julia via the Arch community repos, but I eventually switched to using the official Julia binaries instead as is [recommended](https://julialang.org/downloads/platform.html). To take the pain out managing subsquent versions and updates, I used the handy [JILL](https://github.com/abelsiqueira/jill) script:
 
@@ -88,7 +122,7 @@ There's a distributed version of Julia via the Arch community repos, but I event
 $ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
 ```
 
-## GPU / NVIDIA CUDA
+### GPU / NVIDIA CUDA
 
 My Dell Precision 9570 laptop comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. After various steps and misteps trying to install the NVIDIA drivers, I finally got everything working thanks to [this outstanding guide](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570#Manually_loading/unloading_NVIDIA_module) on the Arch wiki. (Which, in turn, is based on this [this community thread](https://bbs.archlinux.org/viewtopic.php?pid=1826641#p1826641).). Some high level remarks:
 
