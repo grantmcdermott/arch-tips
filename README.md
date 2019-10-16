@@ -5,8 +5,9 @@ Change and customization log on my Arch Linux system
 <!-- TOC depthFrom:2 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Installation](#installation)
-	- [UEFI stuff](#uefi-stuff)
-	- [Home folder on separate partition](#home-folder-on-separate-partition)
+	- [UEFI prep](#uefi-prep)
+	- [Tip: Use a distribution](#tip-use-a-distribution)
+	- [Home folder on separate partition (after install)](#home-folder-on-separate-partition-after-install)
 - [Backup](#backup)
 - [Data science setup](#data-science-setup)
 	- [R](#r)
@@ -26,11 +27,18 @@ Change and customization log on my Arch Linux system
 
 ## Installation
 
-### UEFI stuff
+### UEFI prep
 
 Follow the [Arch wiki](https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#UEFI). Basically (1) switch SATA mode from RAID to ACHI, (2) disable secure boot, and (3) change fastboot to "Through" in "Post behaviour". Not sure that this last step is needed. I also enabled legacy BIOS drivers, since my system was having trouble reading the live USB.
 
-### Home folder on separate partition
+### Tip: Use a distribution
+
+You can, of course, build Arch from scratch. But not everyone ~~is a masochist~~ has time for that. I installed my Arch system using the (sadly discontinued) Antergos project. Luckily, there are many more options available. I recommend either:
+
+- [EndeavourOS](https://endeavouros.com/): Picking up where the super Antergos community left off. Comes with all of the benefits of a bleeding-edge Arch setup without the pain. This would be my first choice if I were starting anew.
+- [Manjaro](https://manjaro.org/): Another good option that a lot of people swear by. (Note, this is actually a derivative of Arch with its own repositories, etc.)
+
+### Home folder on separate partition (after install)
 
 I think this was an option on the original install media, but I somehow missed it. At any rate, creating this after the fact was relatively easy. I first created a GParted Live USB (download the ISO image [here](https://gparted.org/liveusb.php) and flash with Etcher). This was a lot quicker than creating a live USB of an entire distro and I only needed to resize some partitions anyway. From here, there are various guides (e.g. [here](https://help.ubuntu.com/community/Partitioning/Home/Moving) and [here](https://www.maketecheasier.com/move-home-folder-ubuntu/)) and I just followed along. FWIW, keeping your home directory on a separate partition is probably safer and also makes [distro hopping](https://www.maketecheasier.com/switch-between-linux-distros-without-losing-data/) easier.
 
