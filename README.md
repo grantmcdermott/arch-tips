@@ -45,9 +45,11 @@ $ sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclu
 
 ## Data science setup
 
-I followed (most of) the tips on Patrick Schratz' [outstanding guide](https://pjs-web.de/post/arch-install-guide-for-r/). His setup is tailored to R and spatial analysis, which covers my major needs. However, I also made the following changes in addition to his suggestions (including notes on some other lanaguages).
+I followed (most of) the tips on Patrick Schratz' [outstanding guide](https://pjs-web.de/post/arch-install-guide-for-r/). His setup is tailored to R and spatial analysis, which covers my major needs. Here is a list of things that I did in addition to that, including other languages and GPU setup.
 
 ### R
+
+Again, see Patrick's [guide](https://pjs-web.de/post/arch-install-guide-for-r/#r) for general installation and optimization tips. However, I also made the following additional changes.
 
 #### Set common *R* library path
 
@@ -69,10 +71,10 @@ $ echo 'R_LIBS_USER=/usr/lib/R/library' >>  ~/.Renviron
 
 #### Compile R packages in parallel
 
-Reinstallation of R packages is already much quicker thanks to ccache (again, see Patrick's [guide](https://pjs-web.de/post/arch-install-guide-for-r/#ccache)). However, I also enabled parallel compilation of R packages to speed up first-time installation, as well as any further compiling that needs to be done.
+Reinstallation of R packages is already much quicker thanks to [ccache](https://pjs-web.de/post/arch-install-guide-for-r/#ccache)). However, I also enabled parallel compilation of R packages to speed up first-time installation, as well as any further compiling that needs to be done.
 
 ```sh
-echo 'options(Ncpus=parallel::detectCores())' >> ~/.Rprofile
+$ echo 'options(Ncpus=parallel::detectCores())' >> ~/.Rprofile
 ```
 
 ### conda (Python)
