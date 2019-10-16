@@ -1,6 +1,6 @@
 # Arch Linux tips
 
-Change and customization log on my Arch Linux system
+Changelog and customization tips for my Arch Linux system, which is running on a Dell Precision 5530 laptop (same machine as the [XPS 15 (9570)](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570).) If nothing else, it's a record of things I tend to forget.
 
 <!-- TOC depthFrom:2 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
@@ -8,13 +8,13 @@ Change and customization log on my Arch Linux system
 	- [UEFI prep](#uefi-prep)
 	- [Tip: Use a distribution](#tip-use-a-distribution)
 	- [Home folder on separate partition (after install)](#home-folder-on-separate-partition-after-install)
+- [NVIDIA GPU](#nvidia-gpu)
 - [Backup](#backup)
 - [Data science setup](#data-science-setup)
 	- [R](#r)
 	- [conda (Python)](#conda-python)
 	- [Julia](#julia)
-	- [GPU / NVIDIA CUDA](#gpu-nvidia-cuda)
-- [Removing Antergos](#removing-antergos)
+	- [Deep learning (CUDA)](#deep-learning-cuda)
 - [Miscellaneous](#miscellaneous)
 	- [Printing](#printing)
 	- [Wi-fi from Shell/TTY](#wi-fi-from-shelltty)
@@ -22,6 +22,7 @@ Change and customization log on my Arch Linux system
 	- [HiDPI](#hidpi)
 	- [Manually compile a package from source with edited PKGBUILD (Julia example)](#manually-compile-a-package-from-source-with-edited-pkgbuild-julia-example)
 	- [Touchpad](#touchpad)
+	- [Removing Antergos](#removing-antergos)
 
 <!-- /TOC -->
 
@@ -33,7 +34,7 @@ Follow the [Arch wiki](https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#UEF
 
 ### Tip: Use a distribution
 
-You can, of course, build Arch from scratch. But not everyone ~~is a masochist~~ has time for that. I installed my Arch system using the (sadly discontinued) Antergos project. Luckily, there are many more options available. I recommend either:
+You can, of course, build Arch from scratch. But not everyone ~~is a masochist~~ has time for that. I installed my Arch system using the ([sadly discontinued](https://github.com/grantmcdermott/arch-tips#removing-antergos)) Antergos project. Luckily, there are many more options available. I recommend either:
 
 - [EndeavourOS](https://endeavouros.com/): Picking up where the super Antergos community left off. Comes with all of the benefits of a bleeding-edge Arch setup without the pain. This would be my first choice if I were starting anew.
 - [Manjaro](https://manjaro.org/): Another good option that a lot of people swear by. (Note, this is actually a derivative of Arch with its own repositories, etc.)
@@ -41,6 +42,63 @@ You can, of course, build Arch from scratch. But not everyone ~~is a masochist~~
 ### Home folder on separate partition (after install)
 
 I think this was an option on the original install media, but I somehow missed it. At any rate, creating this after the fact was relatively easy. I first created a GParted Live USB (download the ISO image [here](https://gparted.org/liveusb.php) and flash with Etcher). This was a lot quicker than creating a live USB of an entire distro and I only needed to resize some partitions anyway. From here, there are various guides (e.g. [here](https://help.ubuntu.com/community/Partitioning/Home/Moving) and [here](https://www.maketecheasier.com/move-home-folder-ubuntu/)) and I just followed along. FWIW, keeping your home directory on a separate partition is probably safer and also makes [distro hopping](https://www.maketecheasier.com/switch-between-linux-distros-without-losing-data/) easier.
+
+## NVIDIA GPU
+
+My Dell Precision 5530 laptop comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. After various steps and misteps trying to install the NVIDIA drivers, I finally got everything working thanks to [this outstanding guide](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570#Manually_loading/unloading_NVIDIA_module) on the Arch wiki. (Which, in turn, is based on this [this community thread](https://bbs.archlinux.org/viewtopic.php?pid=1826641#p1826641).). Some high level remarks:
+
+- The NVIDIA GPU and drivers only appear to work well on the Xorg session. Wayland performance is still shaky, or not even supported AFAIK.
+   - A side problem with this is that scaling on my HiDPI screen is better on Wayland. However, I more or less managed to resolve this (see [#HiDP](https://github.com/grantmcdermott/arch-tips#hidpi)).)
+- The way the setup works is that the discrete NVIDIA GPU is switched off by default when the computer boots up to save battery life, etc.
+- To turn it on, I just need to run a simple shell script that I've saved to my home directory.
+
+```sh
+$ cd ~ ## Just emphasising the location
+$ sudo bash enablegpu.sh ## 'sudo bash disablegpu.sh' to turn off. Or, just shut down.
+$ nvidia-smi ## Optional: confirm that the NVIDIA card has been enabled
+```
+
+With the NVIDIA chip working, it's fairly straightforward to set up a GPU-enabled deep-learning environment.
+
+PS &mdash; As noted above, my working NVIDIA setup only came after various misteps. And the "solution" to these misteps back then was basically just to keep the discrete GPU switched off at all times. Thankfully, the real solution was easy enough thanks to the Arch wiki guide. Still, for posterity and since I learned a lot from working through these steps, the old changelog is under the fold...
+
+<details>
+  <summary>Old NVIDIA changelog (click to expand) </summary>
+   I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake! The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu.
+
+   **Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and
+   reboot as normal ("CTR-ALT-DEL").
+
+   **Update:** After some package and system updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a question on the [Antergos forum](https://forum.antergos.com/topic/11077/blank-screen-after-log-in-nvidia-issue) about this.
+
+   **Update 2:** Added "nouveau.modeset=0" to the [kernel boot parameters](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) as per various online suggestions:
+   ```sh
+   $ sudo nano /etc/default/grub
+   ```
+   Add "nouveau.modeset=0" to the GRUB\_CMDLINE\_LINUX\_DEFAULT variable. Then CTL+X and "y" to save. Re-generate the grub.cfg file:
+   ```sh
+   $ sudo grub-mkconfig -o /boot/grub/grub.cfg
+   ```
+
+   This solves the log-in and hibernate problem... but only for Xorg. In other words, now my Wayland session(s) have disappeared!
+
+   **Update 3:** Have tried various fixes in the interim, including removing KDE/Plasma entirely in case there were some sytem conflicts with Gnome. I also tried removing the folder `~/.config/gnome-session` as per [this thread](https://bbs.archlinux.org/viewtopic.php?pid=1708172#p1708172). Didn't work. In fact, it turns out that the issue of GDM not being able to recognize Wayland sessions is common. Here are some relevant threads: [1](https://bbs.archlinux.org/viewtopic.php?id=225477), [2](https://www.reddit.com/r/archlinux/comments/823ye9/wayland_with_gnome/), [3](https://www.reddit.com/r/archlinux/comments/89vkwq/gnomegdm_issue_no_wayland_session/), [4](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/). Will read through these various threads and try different options.
+
+   **Update 4:** Solved! Thanks to [this](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/) suggestion, I needed to enable early KMS start. (Basically, my laptop is too fast for its own good.) The full solution then is to disable modesetting for the Nouveau driver (see **Update 2** above) and enable early KMS start for the integrated Intel GPU, by adding following Intel modules to `/etc/mkinitcpio.conf`:
+   ```
+   /etc/mkinitcpio.conf
+   ---
+   MODULES=(intel_agp i915)
+   ```
+
+   Once that's done, regenerate initramfs:
+   ```sh
+   $ sudo mkinitcpio -p linux
+   ```
+
+   Reboot and I can now log directly into Gnome Wayland from GDM.
+
+</details>
 
 ## Backup
 
@@ -132,67 +190,9 @@ There's a distributed version of Julia via the Arch community repos, but I event
 $ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
 ```
 
-### GPU / NVIDIA CUDA
+### Deep learning (CUDA)
 
-My Dell Precision 9570 laptop comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. After various steps and misteps trying to install the NVIDIA drivers, I finally got everything working thanks to [this outstanding guide](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570#Manually_loading/unloading_NVIDIA_module) on the Arch wiki. (Which, in turn, is based on this [this community thread](https://bbs.archlinux.org/viewtopic.php?pid=1826641#p1826641).). Some high level remarks:
-
-- The NVIDIA GPU and drivers only appear to work well on the Xorg session. Wayland performance is still shaky, or not even supported AFAIK.
-   - A side problem with this is that scaling on my HiDPI screen is better on Wayland. However, I managed to resolve this &mdash; more or less &mdash; [here.](https://github.com/grantmcdermott/arch-tips#hidpi))
-- The way the setup works is that the discrete NVIDIA GPU is switched off by default when the computer boots up to save battery life, etc.
-- To turn it on, I just need to run a simple shell script that I've saved to my home directory.
-
-```sh
-$ cd ~ ## Just emphasising the location
-$ sudo bash enablegpu.sh ## 'sudo bash disablegpu.sh' to turn off. Or, just shut down.
-$ nvidia-smi ## Optional: confirm that the NVIDIA card has been enabled
-```
-
-As noted above, my working NVIDIA setup only came after various misteps. And the "solution" to these misteps was basically just to keep the discrete GPU switched off at all times. Thankfully, the real solution was easy enough thanks to the Arch wiki guide. Still, for posterity and since I learned a lot from working through these steps, the old changelog is under the fold...
-
-<details>
-  <summary>Old NIVIA changelog </summary>
-   I initially tried to get CUDA support going by installing the `nvida` package from the Arch repositories... Which turned out to be a mistake! The system would boot up fine, but I was subsequently presented with a blank screen once I got passed the GRUB menu.
-
-   **Solution:** Boot directly into the shell (i.e. TTY) and uninstall the nvidia package: Press "Ctr-Alt-F2" at the grub menu and then hit "e" to edit the selection. Look for the line starting with "linux" and add "3" (without the quotation marks) to the end of that line. F10 to exit and then you will be presented with the shell upon booting up. Enter your username, followed by your password. Finally, uninstall the nvidia package by typing `sudo pacman -Rs nvidia` and
-   reboot as normal ("CTR-ALT-DEL").
-
-   **Update:** After some package and system updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a question on the [Antergos forum](https://forum.antergos.com/topic/11077/blank-screen-after-log-in-nvidia-issue) about this.
-
-   **Update 2:** Added "nouveau.modeset=0" to the [kernel boot parameters](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) as per various online suggestions:
-   ```sh
-   $ sudo nano /etc/default/grub
-   ```
-   Add "nouveau.modeset=0" to the GRUB\_CMDLINE\_LINUX\_DEFAULT variable. Then CTL+X and "y" to save. Re-generate the grub.cfg file:
-   ```sh
-   $ sudo grub-mkconfig -o /boot/grub/grub.cfg
-   ```
-
-   This solves the log-in and hibernate problem... but only for Xorg. In other words, now my Wayland session(s) have disappeared!
-
-   **Update 3:** Have tried various fixes in the interim, including removing KDE/Plasma entirely in case there were some sytem conflicts with Gnome. I also tried removing the folder `~/.config/gnome-session` as per [this thread](https://bbs.archlinux.org/viewtopic.php?pid=1708172#p1708172). Didn't work. In fact, it turns out that the issue of GDM not being able to recognize Wayland sessions is common. Here are some relevant threads: [1](https://bbs.archlinux.org/viewtopic.php?id=225477), [2](https://www.reddit.com/r/archlinux/comments/823ye9/wayland_with_gnome/), [3](https://www.reddit.com/r/archlinux/comments/89vkwq/gnomegdm_issue_no_wayland_session/), [4](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/). Will read through these various threads and try different options.
-
-   **Update 4:** Solved! Thanks to [this](https://www.reddit.com/r/archlinux/comments/9wycf1/wayland_option_gone_from_login_screen_gnomegdm/) suggestion, I needed to enable early KMS start. (Basically, my laptop is too fast for its own good.) The full solution then is to disable modesetting for the Nouveau driver (see **Update 2** above) and enable early KMS start for the integrated Intel GPU, by adding following Intel modules to `/etc/mkinitcpio.conf`:
-   ```
-   /etc/mkinitcpio.conf
-   ---
-   MODULES=(intel_agp i915)
-   ```
-
-   Once that's done, regenerate initramfs:
-   ```sh
-   $ sudo mkinitcpio -p linux
-   ```
-
-   Reboot and I can now log directly into Gnome Wayland from GDM.
-
-</details>
-
-## Removing Antergos
-
-Following the [resolution of the Antergos Project](https://antergos.com/blog/antergos-linux-project-ends/), I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system.
-
-In related news, [Endeavour OS](https://endeavouros.com/) has picked up where Antergos left off and looks really cool.
-
+This section presumes that you have enabled
 
 ## Miscellaneous
 
@@ -282,3 +282,9 @@ $ julia
 ### Touchpad
 
 _Note: Only relevant for the Plasma DE, which I'm no longer using._ The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad*) didn't seem to last and kept reverting back to the default behaviour. So I [installed](https://wiki.archlinux.org/index.php/Libinput#Installation) `libinput` and then followed the final section of [this guide](https://www.dell.com/support/article/us/en/04/sln308258/precision-xps-ubuntu-general-touchpad-mouse-issue-fix?lang=en) (See Fig. 7) to get tapping, right-click two finger tap, etc. working.
+
+### Removing Antergos
+
+Following the [resolution of the Antergos Project](https://antergos.com/blog/antergos-linux-project-ends/), I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system.
+
+In related news, [Endeavour OS](https://endeavouros.com/) has picked up where Antergos left off and looks really cool.
