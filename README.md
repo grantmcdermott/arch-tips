@@ -12,11 +12,6 @@ Follow the [Arch wiki](https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#UEF
 
 I think this was an option on the original install media, but I somehow missed it. At any rate, creating this after the fact was relatively easy. I first created a GParted Live USB (download the ISO image [here](https://gparted.org/liveusb.php) and flash with Etcher). This was a lot quicker than creating a live USB of an entire distro and I only needed to resize some partitions anyway. From here, there are various guides (e.g. [here](https://help.ubuntu.com/community/Partitioning/Home/Moving) and [here](https://www.maketecheasier.com/move-home-folder-ubuntu/)) and I just followed along. FWIW, keeping your home directory on a separate partition is probably safer and also makes [distro hopping](https://www.maketecheasier.com/switch-between-linux-distros-without-losing-data/) easier.
 
-## Touchpad
-
-The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad*) didn't seem to last and kept reverting back to the default behaviour. So I [installed](https://wiki.archlinux.org/index.php/Libinput#Installation) `libinput` and then followed the final section of [this guide](https://www.dell.com/support/article/us/en/04/sln308258/precision-xps-ubuntu-general-touchpad-mouse-issue-fix?lang=en) (See Fig. 7) to get tapping, right-click two finger tap, etc. working.
-
-
 ## Backup
 
 Very easy with rsync. See [this video](https://www.youtube.com/watch?v=oS5uH0mzMTg).
@@ -148,8 +143,6 @@ As noted above, my working NVIDIA setup only came after various misteps. And the
 
 </details>
 
-
-
 ## Removing Antergos
 
 Following the [resolution of the Antergos Project](https://antergos.com/blog/antergos-linux-project-ends/), I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system.
@@ -185,7 +178,6 @@ Alternatively, launch via GDM:
 ```sh
 $ sudo systemctl start gdm
 ```
-
 
 ### HiDPI
 
@@ -242,3 +234,7 @@ $ sudo pacman -U julia-2:1.2.0-1-x86_64.pkg.tar
 ```sh
 $ julia
 ```
+
+### Touchpad
+
+_Note: Only relevant for the Plasma DE, which I'm no longer using._ The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad*) didn't seem to last and kept reverting back to the default behaviour. So I [installed](https://wiki.archlinux.org/index.php/Libinput#Installation) `libinput` and then followed the final section of [this guide](https://www.dell.com/support/article/us/en/04/sln308258/precision-xps-ubuntu-general-touchpad-mouse-issue-fix?lang=en) (See Fig. 7) to get tapping, right-click two finger tap, etc. working.
