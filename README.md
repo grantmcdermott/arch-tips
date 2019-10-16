@@ -14,7 +14,8 @@ Changelog and customization tips for my Arch Linux system, which is running on a
 	- [R](#r)
 	- [conda (Python)](#conda-python)
 	- [Julia](#julia)
-	- [Deep learning (CUDA)](#deep-learning-cuda)
+	- [GPU-enabled deep-learning (TensorFlow, CUDA, etc.)](#gpu-enabled-deep-learning-tensorflow-cuda-etc)
+- [Now build your DL model...](#now-build-your-dl-model)
 - [Miscellaneous](#miscellaneous)
 	- [Printing](#printing)
 	- [Wi-fi from Shell/TTY](#wi-fi-from-shelltty)
@@ -57,6 +58,8 @@ $ cd ~ ## Just emphasising the location
 $ sudo bash enablegpu.sh ## 'sudo bash disablegpu.sh' to turn off. Or, just shut down.
 $ nvidia-smi ## Optional: confirm that the NVIDIA card has been enabled
 ```
+
+**Tip:** To monitor GPU use and performance (a la `htop`), run `$ watch -n 1 nvidia-smi`. Or you can install the [`gpustat`](https://github.com/wookayin/gpustat) command line utility.
 
 With the NVIDIA chip working, it's fairly straightforward to set up a GPU-enabled deep-learning environment.
 
@@ -137,7 +140,7 @@ $ echo 'R_LIBS_USER=/usr/lib/R/library' >>  ~/.Renviron
 
 #### Compile R packages in parallel
 
-Reinstallation of R packages is already much quicker thanks to [ccache](https://pjs-web.de/post/arch-install-guide-for-r/#ccache)). However, I also enabled parallel compilation of R packages to speed up first-time installation, as well as any further compiling that needs to be done.
+Reinstallation of R packages is already much quicker thanks to [ccache](https://pjs-web.de/post/arch-install-guide-for-r/#ccache). However, I also enabled parallel compilation of R packages to speed up first-time installation, as well as any further compiling that needs to be done.
 
 ```sh
 $ echo 'options(Ncpus=parallel::detectCores())' >> ~/.Rprofile
@@ -158,7 +161,7 @@ $ source ~/.zshrc ## Or you can just close and reopen the shell
 
 #### conda environments
 
-To activate conda environments, one first need to initiliase this capability for your particular shell (zsh, fish, etc.). However, this has the undesirable effect of automatically activating the previous conda env whenever you open the shell, regardless of whether you want to use conda or not. Luckily there's a pretty simple [solution](https://stackoverflow.com/a/54560785/4115816):
+To activate conda environments, you first need to initialise this capability for your particular shell (zsh, fish, etc.). However, this has the undesirable effect of automatically activating the previous conda env whenever you open the shell, regardless of whether you want to use conda or not. Luckily there's a pretty simple [solution](https://stackoverflow.com/a/54560785/4115816):
 
 ```sh
 $ conda init zsh ## Initialise. Then log out and then back in.
@@ -175,7 +178,7 @@ $ conda deactivate
 
 #### Add channels
 
-Necessary, for example, when I wanted to add the Apache Arrow C++ module from Conda Forge
+Necessary, for example, when I wanted to add the Apache Arrow C++ module from Conda Forge.
 
 ```sh
 $ conda config --add channels conda-forge
@@ -190,9 +193,39 @@ There's a distributed version of Julia via the Arch community repos, but I event
 $ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
 ```
 
-### Deep learning (CUDA)
+### GPU-enabled deep-learning (TensorFlow, CUDA, etc.)
 
-This section presumes that you have enabled
+This section presumes that you have enabled your discrete GPU and installed the NVIDIA drivers ([here](https://github.com/grantmcdermott/arch-tips#nvidia-gpu)). After that, you have a couple of options. I actually ended up installing several CUDA-enabled environments, since I have the disk space and this was easy enough to do. As you as wish.
+
+#### conda
+
+As per [this](https://towardsdatascience.com/tensorflow-gpu-installation-made-easy-use-conda-instead-of-pip-52e5249374bc) killer blog post, all you need is
+
+```sh
+$ conda create --name tf_gpu tensorflow-gpu
+```
+
+#### Arch repos
+
+Alternatively, you can also install the TensorFlow packages directly from the [official Arch repos](https://www.archlinux.org/packages/?sort=&q=tensorflow&maintainer=&flagged=). For the GPU-versions:
+
+```sh
+$ pac install tensorflow-cuda python-tensorflow-cuda
+```
+
+#### R
+
+Finally, you can go through the excellent [tensorflow and keras](https://tensorflow.rstudio.com/) packages built for R. These allow for various installation options depending on your setup, as well as multiple installations for different Python virtual environments.
+
+For example, the default `install_keras(tensorflow = "gpu")` approach will download and install everything to a new virtual environment located at `~/.virtualenvs/r-reticulate`.
+
+As another example, assume that you already created the "tf_gpu" conda environment described above. Then you obviously don't need to install the whole Python setup again. Instead, just tell R to interface with this existing environment as follows:
+
+```r
+library(keras)
+use_condaenv("tf_gpu")
+## Now build your DL model...
+```
 
 ## Miscellaneous
 
