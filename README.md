@@ -21,10 +21,9 @@ The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad
 
 Very easy with rsync. See [this video](https://www.youtube.com/watch?v=oS5uH0mzMTg).
 
-```
-bash ## zsh doesn't work for some reason
-sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclude=/sys/* --exclude=/tmp/* --exclude=/run/* --exclude=/mnt/* --exclude=/media/* --exclude="swapfile" --exclude="lost+found" --exclude=".cache" --exclude=".VirtualBoxVMs" --exclude=".ecryptfs" / /run/media/grant/PrecisionBackup
-
+```sh
+$ bash ## zsh doesn't work for some reason
+$ sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclude=/sys/* --exclude=/tmp/* --exclude=/run/* --exclude=/mnt/* --exclude=/media/* --exclude="swapfile" --exclude="lost+found" --exclude=".cache" --exclude=".VirtualBoxVMs" --exclude=".ecryptfs" / /run/media/grant/PrecisionBackup
 ```
 
 ## Data science setup
@@ -34,14 +33,17 @@ I followed (most of) the tips on Patrick Schratz' [exellent guide](https://pjs-w
 ### Set common *R* library path
 
 Adapting [this](https://stackoverflow.com/questions/44861967/r-3-4-1-single-candle-personal-library-path-error-unable-to-create-na/44903158#44903158) SO post answer, I set a system wide library path as follows:
+
+```sh
+$ sudo groupadd rusers
+$ sudo gpasswd -a grant rusers
+$ cd /usr/lib/R ## Get location by typing ".libPaths()" in your R console
+$ sudo chown grant:rusers -R R/
+$ sudo chmod -R 775 R/
 ```
-sudo groupadd rusers
-sudo gpasswd -a grant rusers
-cd /usr/lib/R ## Get location by typing ".libPaths()" in your R console
-sudo chown grant:rusers -R R/
-sudo chmod -R 775 R/
-```
+
 Once that's done, tell *R* to make this shared library path the default for your user, by adding the following line to your `~/.Renviron` file:
+
 ```
 R_LIBS_USER=/usr/lib/R/library ## Or whatever location you get by typing ".libPaths()" in your R console
 ```
@@ -52,7 +54,7 @@ R_LIBS_USER=/usr/lib/R/library ## Or whatever location you get by typing ".libPa
 
 I [installed](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations) Miniconda3 using bash before I switched over to the zsh shell. As a result (or perhaps it's required no matter when you switch over to zsh), I had to [add the Miniconda directory to the zsh PATH environment variable](https://stackoverflow.com/a/35246794).
 
-```shell
+```sh
 $ echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> .zshrc
 $ source ~/.zshrc ## Or you can just close and reopen the shell
 ```
@@ -61,14 +63,14 @@ $ source ~/.zshrc ## Or you can just close and reopen the shell
 
 To activate conda environments, one first need to initiliase this capability for your particular shell (zsh, fish, etc.). However, this has the undesirable effect of automatically activating the previous conda env whenever you open the shell, regardless of whether you want to use conda or not. Luckily there's a pretty simple [solution](https://stackoverflow.com/a/54560785/4115816):
 
-```shell
+```sh
 $ conda init zsh ## Initialise. Then log out and then back in.
 $ conda config --set auto_activate_base false ## Stop automatic activation.
 ```
 
 Once that's done, it's easy to activate and switch between environments
 
-```shell
+```sh
 $ conda info --envs ## list all environments
 $ conda activate tf_gpu ## activate the "tf_gpu" environment
 $ conda deactivate
@@ -78,17 +80,17 @@ $ conda deactivate
 
 Necessary, for example, when I wanted to add the Apache Arrow C++ module from Conda Forge
 
-```shell
-conda config --add channels conda-forge
-conda config --set channel_priority strict
+```sh
+$ conda config --add channels conda-forge
+$ conda config --set channel_priority strict
 ```
 
 ## Julia
 
 There's a distributed version of Julia via the Arch community repos, but I eventually switched to using the official Julia binaries instead as is [recommended](https://julialang.org/downloads/platform.html). To take the pain out managing subsquent versions and updates, I used the handy [JILL](https://github.com/abelsiqueira/jill) script:
 
-```
-sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
+```sh
+$ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
 ```
 
 ## GPU / NVIDIA CUDA
@@ -100,9 +102,10 @@ My Dell Precision 9570 laptop comes with a hybrid graphics system comprised of t
 - The way the setup works is that the discrete NVIDIA GPU is switched off by default when the computer boots up to save battery life, etc.
 - To turn it on, I just need to run a simple shell script that I've saved to my home directory.
 
-```
-~$ sudo bash enablegpu.sh ## 'sudo bash disablegpu.sh' to turn off. Or, just shut down.
-~$ nvidia-smi ## Optional: confirm that the NVIDIA card has been enabled
+```sh
+$ cd ~ ## Just emphasising the location
+$ sudo bash enablegpu.sh ## 'sudo bash disablegpu.sh' to turn off. Or, just shut down.
+$ nvidia-smi ## Optional: confirm that the NVIDIA card has been enabled
 ```
 
 As noted above, my working NVIDIA setup only came after various misteps. And the "solution" to these misteps was basically just to keep the discrete GPU switched off at all times. Thankfully, the real solution was easy enough thanks to the Arch wiki guide. Still, for posterity and since I learned a lot from working through these steps, the old changelog is under the fold...
@@ -117,12 +120,12 @@ As noted above, my working NVIDIA setup only came after various misteps. And the
    **Update:** After some package and system updates, I'm back to the post-login blank screen! Weirdly, starting GDM from TTY1 (see above) works fine, so this is my current workaround. Have left a question on the [Antergos forum](https://forum.antergos.com/topic/11077/blank-screen-after-log-in-nvidia-issue) about this.
 
    **Update 2:** Added "nouveau.modeset=0" to the [kernel boot parameters](https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB) as per various online suggestions:
-   ```
-   sudo nano /etc/default/grub
+   ```sh
+   $ sudo nano /etc/default/grub
    ```
    Add "nouveau.modeset=0" to the GRUB\_CMDLINE\_LINUX\_DEFAULT variable. Then CTL+X and "y" to save. Re-generate the grub.cfg file:
-   ```
-   sudo grub-mkconfig -o /boot/grub/grub.cfg
+   ```sh
+   $ sudo grub-mkconfig -o /boot/grub/grub.cfg
    ```
 
    This solves the log-in and hibernate problem... but only for Xorg. In other words, now my Wayland session(s) have disappeared!
@@ -137,8 +140,8 @@ As noted above, my working NVIDIA setup only came after various misteps. And the
    ```
 
    Once that's done, regenerate initramfs:
-   ```
-   sudo mkinitcpio -p linux
+   ```sh
+   $ sudo mkinitcpio -p linux
    ```
 
    Reboot and I can now log directly into Gnome Wayland from GDM.
@@ -163,24 +166,24 @@ My home printer had been found automatically at first. However, I couldn't find 
 ### Wi-fi from Shell/TTY
 
 Relevant to cases where you need to log into the Shell/TTY to fix some hanging/freeze problem (e.g. CUDA/NVIDIA above). The easiest way I've found is to use `nmcli` (command line version of network manger). To see the available SSIDs type
-```
-nmcli dev wifi
+```sh
+$ nmcli dev wifi
 ```
 Then connect with
-```
-nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
+```sh
+$ nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
 ```
 
 ### Starting Gnome session from Shell/TTY
 
 Similar rationale to the above:
-```
-XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
+```sh
+$ XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
 ```
 
 Alternatively, launch via GDM:
-```
-sudo systemctl start gdm
+```sh
+$ sudo systemctl start gdm
 ```
 
 
@@ -199,12 +202,12 @@ R_LD_LIBRARY_PATH="$(R RHOME)/lib:$JLIB"
 You need to log out and back in again for the settings to take hold.
 
 The Arch wiki has the goods here. One thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
-```
-pac install terminus-font
+```sh
+$ pac install terminus-font
 ```
 You can then see the set of available fonts by typing `ls /usr/share/kbd/console`. To temporarily test out a larger font, type
-```
-setfont ter-132n
+```sh
+$ setfont ter-132n
 ```
 (Type `showconsolefont` if you want to see a table of the font's glyphs and letters).
 
@@ -218,24 +221,24 @@ FONT=ter-132n
 I initally installed [Julia](https://julialang.org/) via the Arch community repos. However, a build problem cropped up when upgrading to Julia 1.2.0; see [bug report](https://bugs.archlinux.org/task/63536?project=5&string=julia) and [GitHub issue](https://github.com/JuliaLang/julia/issues/33038). I ultimately took this as a sign to install the official Julia binaries instead. (See [above](#julia).) However, this also seemed like a good chance to practice compiling a package from the community repos with an edited PKGBUILD. There's suprisingly little guidance about this online, although [this Manjaro forum thread](https://forum.manjaro.org/t/how-to-install-pkgbuild-file-downloaded-manually/69365/2) proved very helpful. My full steps as follows:
 
 1. Create some folder to download the relevant files to.  I used `~/julia` but I don't think the location really matters.
-```
+```sh
 $ mkdir ~/julia
 $ cd ~/julia
 ```
 2. Download/create the [PKBUILD and ancilliary files](https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/julia) to this location. There may be a smart way to to this automatically, but I just created the files manually using nano+copy+paste.
 3. Edit the PKGBUILD (and any other files) as needed.
 4. Build the package. This will take a while. Note: Using regular `$ makepkg -si` gave me errors. So instead I used:
-```
+```sh
 $ makepkg -g >> PKGBUILD
 #$ makepkg ## Gives GPG verification error. Fix that below first:
 $ gpg --recv-key 66E3C7DC03D6E495 ## Add GPG key
 $ makepkg ## NB: Don't use sudo!
 ```
 5. Install the **pkg.tar** file. Be careful not to confuse with any of the other .tar files lying around in the same directory.
-```
+```sh
 $ sudo pacman -U julia-2:1.2.0-1-x86_64.pkg.tar
 ```
 6. The updated version of Julia was now ready to go:
-```
+```sh
 $ julia
 ```
