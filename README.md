@@ -74,6 +74,14 @@ $ conda activate tf_gpu ## activate the "tf_gpu" environment
 $ conda deactivate
 ```
 
+### Add channels
+
+Necessary, for example, when I wanted to add the Apache Arrow C++ module from Conda Forge
+
+```shell
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+```
 
 ## Julia
 
