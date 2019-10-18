@@ -257,7 +257,7 @@ $ sudo systemctl start gdm
 
 ### HiDPI
 
-The Arch wiki has the goods here. One thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
+The [Arch wiki](https://wiki.archlinux.org/index.php/HiDPI) has the goods here. I've even added a few sections for things that I had to troubleshoot. (E.g. Gnome Shell text scaling for Xorg sessions, although I primarily use Wayland.) One thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
 ```sh
 $ pac install terminus-font
 ```
