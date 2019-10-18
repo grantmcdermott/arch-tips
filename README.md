@@ -260,7 +260,11 @@ $ sudo systemctl start gdm
 
 ### HiDPI
 
-The [Arch wiki](https://wiki.archlinux.org/index.php/HiDPI) has the goods here. I've even added a few sections for things that I had to troubleshoot. (E.g. Gnome Shell text scaling for Xorg sessions, although I primarily use Wayland.) Annoyingly, I also added a section on RStudio HiDPI scaling that was removed by a mod for reasons that make [absolutely no sense](https://wiki.archlinux.org/index.php?title=HiDPI&diff=586566&oldid=586565). At any rate if your RStudio fonts are too big, try editing the RStudio desktop app so that it recognizes an appropriate QT_SCALE_FACTOR environment variable. (A scaling of 0.75 works well for me, but play around.) Open `usr/share/applications/rstudio.desktop` with your preferred text editor as root. Then change the first line to:
+The [Arch wiki](https://wiki.archlinux.org/index.php/HiDPI) has the goods here. I've even added a few sections for things that I had to troubleshoot. (E.g. Gnome Shell text scaling for Xorg sessions, although I primarily use Wayland.) Here are some additional things beyond that:
+
+#### RStudio
+
+Annoyingly, I added a wiki section on RStudio HiDPI scaling that was removed by a mod for reasons that make [absolutely no sense](https://wiki.archlinux.org/index.php?title=HiDPI&diff=586566&oldid=586565). At any rate if your RStudio fonts are too big, try editing the RStudio desktop app so that it recognizes an appropriate QT_SCALE_FACTOR environment variable. (A scaling of 0.75 works well for me, but play around.) Open `usr/share/applications/rstudio.desktop` with your preferred text editor as root. Then change the first line to:
 
 ```
 Exec=env QT_SCALE_FACTOR=0.75 /usr/bin/rstudio-bin %F
@@ -268,7 +272,9 @@ Exec=env QT_SCALE_FACTOR=0.75 /usr/bin/rstudio-bin %F
 
 Next time you launch RStudio, all of the fonts (including menu items) should now be correctly scaled.
 
-One other thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
+#### Linux console font
+
+Another thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
 ```sh
 $ pac install terminus-font
 ```
