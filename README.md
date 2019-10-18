@@ -42,14 +42,13 @@ You can, of course, build Arch from scratch. But not everyone ~~is a masochist~~
 
 ### Home folder on separate partition (after install)
 
-I think this was an option on the original install media, but I somehow missed it. At any rate, creating this after the fact was relatively easy. I first created a GParted Live USB (download the ISO image [here](https://gparted.org/liveusb.php) and flash with Etcher). This was a lot quicker than creating a live USB of an entire distro and I only needed to resize some partitions anyway. From here, there are various guides (e.g. [here](https://help.ubuntu.com/community/Partitioning/Home/Moving) and [here](https://www.maketecheasier.com/move-home-folder-ubuntu/)) and I just followed along. FWIW, keeping your home directory on a separate partition is probably safer and also makes [distro hopping](https://www.maketecheasier.com/switch-between-linux-distros-without-losing-data/) easier.
+I think this was an option on the original install media, but I somehow missed it. At any rate, creating this after the fact wasn't too hard. I first created a GParted Live USB (download the ISO image [here](https://gparted.org/liveusb.php) and flash with Etcher). This was a lot quicker than creating a live USB of an entire distro and I only needed to resize some partitions anyway. From here, there are various guides (e.g. [here](https://help.ubuntu.com/community/Partitioning/Home/Moving) and [here](https://www.maketecheasier.com/move-home-folder-ubuntu/)) and I just followed along. FWIW, keeping your home directory on a separate partition is probably safer and also makes [distro hopping](https://www.maketecheasier.com/switch-between-linux-distros-without-losing-data/) easier.
 
 ## NVIDIA GPU
 
 My Dell Precision 5530 laptop comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. After various steps and misteps trying to install the NVIDIA drivers, I finally got everything working thanks to [this outstanding guide](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570#Manually_loading/unloading_NVIDIA_module) on the Arch wiki. (Which, in turn, is based on this [this community thread](https://bbs.archlinux.org/viewtopic.php?pid=1826641#p1826641).). Some high level remarks:
 
-- The NVIDIA GPU and drivers only appear to work well on the Xorg session. Wayland performance is still shaky, or not even supported AFAIK.
-   - A side problem with this is that scaling on my HiDPI screen is better on Wayland. However, I more or less managed to resolve this (see [#HiDP](https://github.com/grantmcdermott/arch-tips#hidpi)).)
+- ~~The NVIDIA GPU and drivers only appear to work well on the Xorg session. Wayland performance is still shaky, or not even supported AFAIK.~~ Scratch that. The GPU is working just fine on the Wayland session. (Admittedly, I'm using it primarily for computation, not gaming.)
 - The way the setup works is that the discrete NVIDIA GPU is switched off by default when the computer boots up to save battery life, etc.
 - To turn it on, I just need to run a simple shell script that I've saved to my home directory.
 
