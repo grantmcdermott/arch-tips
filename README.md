@@ -2,6 +2,9 @@
 
 Changelog and customization tips for my Arch Linux system, which is running on a Dell Precision 5530 laptop (same machine as the [XPS 15 (9570)](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570).) If nothing else, it's a record of things I tend to forget.
 
+![](desktop_dirty.png)
+*Obligatory "dirty" screenshot running an even more obligatory MNIST example. Also, I like GNOME. (So sue me.)*
+
 <!-- TOC depthFrom:2 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Installation](#installation)
