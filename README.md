@@ -272,6 +272,18 @@ Exec=env QT_SCALE_FACTOR=0.75 /usr/bin/rstudio-bin %F
 
 Next time you launch RStudio, all of the fonts (including menu items) should now be correctly scaled.
 
+#### Texstudio
+
+This one took a little bit of troubleshooting. Everything was way too big initially. To fix, first go to _Options > Configure TeXstudio > Adv. Editor > Hacks/Workarounds_. (Note: Make sure the "Show Advanced Options" box at the bottom of the configure panel is checked.) Uncheck _Try to automatically choose best display options_. Then, change _Render Mode_ to "Qt". Cick OK and close TeXstudio.
+
+Once that's done, similarly to what we did for RStudio, open up the desktop app at `usr/share/applications/texstudio.desktop` and add an appropriate scaling factor.
+
+```
+Exec=env QT_SCALE_FACTOR=0.5 texstudio %F
+```
+
+Re-open Texstudio and bath in the serenity of your correctly scaled workspace.
+
 #### Linux console font
 
 Another thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
