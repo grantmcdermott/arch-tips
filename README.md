@@ -18,12 +18,11 @@ Changelog and customization tips for my Arch Linux system, which is running on a
 	- [conda (Python)](#conda-python)
 	- [Julia](#julia)
 	- [GPU-enabled deep-learning (TensorFlow, CUDA, etc.)](#gpu-enabled-deep-learning-tensorflow-cuda-etc)
-- [Now build your DL model...](#now-build-your-dl-model)
 - [Miscellaneous](#miscellaneous)
+	- [HiDPI](#hidpi)
 	- [Printing](#printing)
 	- [Wi-fi from Shell/TTY](#wi-fi-from-shelltty)
 	- [Starting Gnome session from Shell/TTY](#starting-gnome-session-from-shelltty)
-	- [HiDPI](#hidpi)
 	- [Manually compile a package from source with edited PKGBUILD (Julia example)](#manually-compile-a-package-from-source-with-edited-pkgbuild-julia-example)
 	- [Touchpad](#touchpad)
 	- [Removing Antergos](#removing-antergos)
@@ -225,38 +224,10 @@ As another example, assume that you already created the "tf_gpu" conda environme
 
 ```r
 library(keras)
-use_condaenv("tf_gpu")
-## Now build your DL model...
+use_condaenv("tf_gpu") ## Now build your DL model...
 ```
 
 ## Miscellaneous
-
-### Printing
-
-My home printer had been found automatically at first. However, I couldn't find it after a while for some reason. Adding it manually was a pain, because I didn't have the correct permissions in CUPS. (Adding myself to the "cups" user group didn't work either.) I solved the problem by following [these instructions](https://kernelmastery.com/enable-regular-users-to-add-printers-to-cups/).
-
-### Wi-fi from Shell/TTY
-
-Relevant to cases where you need to log into the Shell/TTY to fix some hanging/freeze problem (e.g. CUDA/NVIDIA above). The easiest way I've found is to use `nmcli` (command line version of network manger). To see the available SSIDs type
-```sh
-$ nmcli dev wifi
-```
-Then connect with
-```sh
-$ nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
-```
-
-### Starting Gnome session from Shell/TTY
-
-Similar rationale to the above:
-```sh
-$ XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
-```
-
-Alternatively, launch via GDM:
-```sh
-$ sudo systemctl start gdm
-```
 
 ### HiDPI
 
@@ -299,6 +270,33 @@ $ setfont ter-132n
 To set this font permanently, open `/etc/vconsole.conf` with nano and add
 ```
 FONT=ter-132n
+```
+
+### Printing
+
+My home printer had been found automatically at first. However, I couldn't find it after a while for some reason. Adding it manually was a pain, because I didn't have the correct permissions in CUPS. (Adding myself to the "cups" user group didn't work either.) I solved the problem by following [these instructions](https://kernelmastery.com/enable-regular-users-to-add-printers-to-cups/).
+
+### Wi-fi from Shell/TTY
+
+Relevant to cases where you need to log into the Shell/TTY to fix some hanging/freeze problem (e.g. CUDA/NVIDIA above). The easiest way I've found is to use `nmcli` (command line version of network manger). To see the available SSIDs type
+```sh
+$ nmcli dev wifi
+```
+Then connect with
+```sh
+$ nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
+```
+
+### Starting Gnome session from Shell/TTY
+
+Similar rationale to the above:
+```sh
+$ XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
+```
+
+Alternatively, launch via GDM:
+```sh
+$ sudo systemctl start gdm
 ```
 
 ### Manually compile a package from source with edited PKGBUILD (Julia example)
