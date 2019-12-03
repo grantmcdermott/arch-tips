@@ -283,9 +283,7 @@ FONT=ter-132n
 
 ###  5.2. <a name='Tilix'></a>Tilix
 
-I prefer [Tilix](https://gnunn1.github.io/tilix-web/) to the default Gnome terminal. The old way of changing the default terminal no longer works in the latest versions of Gnome (see [here](https://bbs.archlinux.org/viewtopic.php?id=246952)). But a simple solution that covers most use cases is to modify the "Ctrl+Alt+T" shortcut. Go to `Settings > Devices > Keyboard Shortcuts`. At the bottom, change the "Terminal" command entry to "tilix" (from gnome-terminal).
-
-`gnome-terminal`
+I prefer [Tilix](https://gnunn1.github.io/tilix-web/) to the default Gnome terminal. The old way of changing the default terminal no longer works in the latest versions of Gnome (see [here](https://bbs.archlinux.org/viewtopic.php?id=246952)). But a simple solution that covers most use cases is to modify the "Ctrl+Alt+T" shortcut. Go to `Settings > Devices > Keyboard Shortcuts`. At the bottom, change the "Terminal" command entry to "tilix" (from ").
 
 ###  5.3. <a name='Printing'></a>Printing
 
