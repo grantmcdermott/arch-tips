@@ -20,6 +20,7 @@ Changelog and customization tips for my Arch Linux system, which is running on a
 	- [GPU-enabled deep-learning (TensorFlow, CUDA, etc.)](#gpu-enabled-deep-learning-tensorflow-cuda-etc)
 - [Miscellaneous](#miscellaneous)
 	- [HiDPI](#hidpi)
+	- [Tilix](#Tilix)
 	- [Printing](#printing)
 	- [Wi-fi from Shell/TTY](#wi-fi-from-shelltty)
 	- [Starting Gnome session from Shell/TTY](#starting-gnome-session-from-shelltty)
@@ -29,24 +30,24 @@ Changelog and customization tips for my Arch Linux system, which is running on a
 
 <!-- /TOC -->
 
-## Installation
+##  1. <a name='Installation'></a>Installation
 
-### UEFI prep
+###  1.1. <a name='UEFIprep'></a>UEFI prep
 
 Follow the [Arch wiki](https://wiki.archlinux.org/index.php/Dell_XPS_15_9560#UEFI). Basically (1) switch SATA mode from RAID to ACHI, (2) disable secure boot, and (3) change fastboot to "Through" in "Post behaviour". Not sure that this last step is needed. I also enabled legacy BIOS drivers, since my system was having trouble reading the live USB.
 
-### Tip: Use a distribution
+###  1.2. <a name='Tip:Useadistribution'></a>Tip: Use a distribution
 
 You can, of course, build Arch from scratch. But not everyone ~~is a masochist~~ has time for that. I installed my Arch system using the ([sadly discontinued](https://github.com/grantmcdermott/arch-tips#removing-antergos)) Antergos project. Luckily, there are many more options available. I recommend either:
 
 - [EndeavourOS](https://endeavouros.com/): Picking up where the super Antergos community left off. Comes with all of the benefits of a bleeding-edge Arch setup without the pain. This would be my first choice if I were starting anew.
 - [Manjaro](https://manjaro.org/): Another good option that a lot of people swear by. (Note, this is actually a derivative of Arch with its own repositories, etc.)
 
-### Home folder on separate partition (after install)
+###  1.3. <a name='Homefolderonseparatepartitionafterinstall'></a>Home folder on separate partition (after install)
 
 I think this was an option on the original install media, but I somehow missed it. At any rate, creating this after the fact wasn't too hard. I first created a GParted Live USB (download the ISO image [here](https://gparted.org/liveusb.php) and flash with Etcher). This was a lot quicker than creating a live USB of an entire distro and I only needed to resize some partitions anyway. From here, there are various guides (e.g. [here](https://help.ubuntu.com/community/Partitioning/Home/Moving) and [here](https://www.maketecheasier.com/move-home-folder-ubuntu/)) and I just followed along. FWIW, keeping your home directory on a separate partition is probably safer and also makes [distro hopping](https://www.maketecheasier.com/switch-between-linux-distros-without-losing-data/) easier.
 
-## NVIDIA GPU
+##  2. <a name='NVIDIAGPU'></a>NVIDIA GPU
 
 My Dell Precision 5530 laptop comes with a hybrid graphics system comprised of two card: 1) an integrated Intel GPU (UHD 630) and 2) an NVIDIA Quadro P2000. After various steps and misteps trying to install the NVIDIA drivers, I finally got everything working thanks to [this outstanding guide](https://wiki.archlinux.org/index.php/Dell_XPS_15_9570#Manually_loading/unloading_NVIDIA_module) on the Arch wiki. (Which, in turn, is based on this [this community thread](https://bbs.archlinux.org/viewtopic.php?pid=1826641#p1826641).). Some high level remarks:
 
@@ -104,7 +105,7 @@ PS &mdash; As noted above, my working NVIDIA setup only came after various miste
 
 </details>
 
-## Backup
+##  3. <a name='Backup'></a>Backup
 
 Very easy with rsync. See [this video](https://www.youtube.com/watch?v=oS5uH0mzMTg).
 
@@ -113,15 +114,15 @@ $ bash ## zsh doesn't work for some reason
 $ sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclude=/sys/* --exclude=/tmp/* --exclude=/run/* --exclude=/mnt/* --exclude=/media/* --exclude="swapfile" --exclude="lost+found" --exclude=".cache" --exclude=".VirtualBoxVMs" --exclude=".ecryptfs" / /run/media/grant/PrecisionBackup
 ```
 
-## Data science setup
+##  4. <a name='Datasciencesetup'></a>Data science setup
 
 I followed (most of) the tips on Patrick Schratz' [outstanding guide](https://pjs-web.de/post/arch-install-guide-for-r/). His setup is tailored to R and spatial analysis, which covers my major needs. Here is a list of things that I did in addition to that, including other languages and GPU setup.
 
-### R
+###  4.1. <a name='R'></a>R
 
 Again, see Patrick's [guide](https://pjs-web.de/post/arch-install-guide-for-r/#r) for general installation and optimization tips. However, I also made the following additional changes.
 
-#### Set common *R* library path
+####  4.1.1. <a name='SetcommonRlibrarypath'></a>Set common *R* library path
 
 Adapting [this](https://stackoverflow.com/questions/44861967/r-3-4-1-single-candle-personal-library-path-error-unable-to-create-na/44903158#44903158) SO post answer, I set a system wide library path as follows:
 
@@ -139,7 +140,7 @@ Once that's done, tell *R* to make this shared library path the default for your
 $ echo 'R_LIBS_USER=/usr/lib/R/library' >>  ~/.Renviron
 ```
 
-#### Compile R packages in parallel
+####  4.1.2. <a name='CompileRpackagesinparallel'></a>Compile R packages in parallel
 
 Reinstallation of R packages is already much quicker thanks to [ccache](https://pjs-web.de/post/arch-install-guide-for-r/#ccache). However, I also enabled parallel compilation of R packages to speed up first-time installation, as well as any further compiling that needs to be done.
 
@@ -147,7 +148,7 @@ Reinstallation of R packages is already much quicker thanks to [ccache](https://
 $ echo 'options(Ncpus=parallel::detectCores())' >> ~/.Rprofile
 ```
 
-#### Reinstall R packages after OpenBLAS update
+####  4.1.3. <a name='ReinstallRpackagesafterOpenBLASupdate'></a>Reinstall R packages after OpenBLAS update
 
 An optimised BLAS library like OpenBLAS or MKL yields significant speed improvements. One [downside](https://twitter.com/grant_mcdermott/status/1199830893981884416) is that upgrading OpenBLAS requires manual reinstallation of the linked R packages. Trying to load the **sf** or **lfe** packages for example, will prompt the following error message: `libopenblas.so.3: cannot open shared object file: No such file of directory`
 
@@ -155,11 +156,11 @@ An optimised BLAS library like OpenBLAS or MKL yields significant speed improvem
 
 It's possible to fix this problem through trial and error; i.e. simply reinstall any package that prompts the above loading error manually. However, a much better way is to do everything in one fell swoop with [this script](https://gist.github.com/mllg/b9c75ded211df7df58942c5d647b9c43) from [Michael Lang](https://twitter.com/michellangts/status/1199990600919064576).
 
-### conda (Python)
+###  4.2. <a name='condaPython'></a>conda (Python)
 
 Following [Jake Vanderplas](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations), I opted for Miniconda instead of the full-blown Anaconda install.
 
-#### Add conda to path (if changing shells after installation)
+####  4.2.1. <a name='Addcondatopathifchangingshellsafterinstallation'></a>Add conda to path (if changing shells after installation)
 
 In most cases, your conda environment should automatically get added to your PATH. However I installed Miniconda3 using bash before switching over to the zsh shell. As a result, I had to add the Miniconda directory to the zsh PATH environment variable (see [here](https://stackoverflow.com/a/35246794)).
 
@@ -168,7 +169,7 @@ $ echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> .zshrc
 $ source ~/.zshrc ## Or you can just close and reopen the shell
 ```
 
-#### conda environments
+####  4.2.2. <a name='condaenvironments'></a>conda environments
 
 To activate conda environments, you first need to initialise this capability for your particular shell (zsh, fish, etc.). However, this has the undesirable effect of automatically activating the previous conda env whenever you open the shell, regardless of whether you want to use conda or not. Luckily there's a pretty simple [solution](https://stackoverflow.com/a/54560785/4115816):
 
@@ -185,7 +186,7 @@ $ conda activate tf_gpu ## activate the "tf_gpu" environment
 $ conda deactivate
 ```
 
-#### Add channels
+####  4.2.3. <a name='Addchannels'></a>Add channels
 
 Necessary, for example, when I wanted to add the Apache Arrow C++ module from Conda Forge.
 
@@ -194,7 +195,7 @@ $ conda config --add channels conda-forge
 $ conda config --set channel_priority strict
 ```
 
-### Julia
+###  4.3. <a name='Julia'></a>Julia
 
 There's a distributed version of Julia via the Arch community repos, but I eventually switched to using the official Julia binaries instead as is [recommended](https://julialang.org/downloads/platform.html). To take the pain out managing subsquent versions and updates, I used the handy [JILL](https://github.com/abelsiqueira/jill) script:
 
@@ -202,11 +203,11 @@ There's a distributed version of Julia via the Arch community repos, but I event
 $ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
 ```
 
-### GPU-enabled deep-learning (TensorFlow, CUDA, etc.)
+###  4.4. <a name='GPU-enableddeep-learningTensorFlowCUDAetc.'></a>GPU-enabled deep-learning (TensorFlow, CUDA, etc.)
 
 This section presumes that you have enabled your discrete GPU and installed the NVIDIA drivers ([here](https://github.com/grantmcdermott/arch-tips#nvidia-gpu)). After that, you have a couple of options. I actually ended up installing several CUDA-enabled environments, since I have the disk space and this was easy enough to do. As you as wish.
 
-#### conda
+####  4.4.1. <a name='conda'></a>conda
 
 As per [this](https://towardsdatascience.com/tensorflow-gpu-installation-made-easy-use-conda-instead-of-pip-52e5249374bc) killer blog post, all you need is
 
@@ -214,7 +215,7 @@ As per [this](https://towardsdatascience.com/tensorflow-gpu-installation-made-ea
 $ conda create --name tf_gpu tensorflow-gpu
 ```
 
-#### Arch repos
+####  4.4.2. <a name='Archrepos'></a>Arch repos
 
 Alternatively, you can also install the TensorFlow packages directly from the [official Arch repos](https://www.archlinux.org/packages/?sort=&q=tensorflow&maintainer=&flagged=). For the GPU-versions:
 
@@ -222,7 +223,7 @@ Alternatively, you can also install the TensorFlow packages directly from the [o
 $ pac install tensorflow-cuda python-tensorflow-cuda
 ```
 
-#### R
+####  4.4.3. <a name='R-1'></a>R
 
 Finally, you can go through the excellent [tensorflow and keras](https://tensorflow.rstudio.com/) packages built for R. These allow for various installation options depending on your setup, as well as multiple installations for different Python virtual environments.
 
@@ -235,13 +236,13 @@ library(keras)
 use_condaenv("tf_gpu") ## Now build your DL model...
 ```
 
-## Miscellaneous
+##  5. <a name='Miscellaneous'></a>Miscellaneous
 
-### HiDPI
+###  5.1. <a name='HiDPI'></a>HiDPI
 
 The [Arch wiki](https://wiki.archlinux.org/index.php/HiDPI) has the goods here. I've even added a few sections for things that I had to troubleshoot. (E.g. Gnome Shell text scaling for Xorg sessions, although I primarily use Wayland.) Here are some additional things beyond that:
 
-#### RStudio
+####  5.1.1. <a name='RStudio'></a>RStudio
 
 Annoyingly, I added a wiki section on RStudio HiDPI scaling that was removed by a mod for reasons that make [absolutely no sense](https://wiki.archlinux.org/index.php?title=HiDPI&diff=586566&oldid=586565). At any rate if your RStudio fonts are too big, try editing the RStudio desktop app so that it recognizes an appropriate QT_SCALE_FACTOR environment variable. (A scaling of 0.75 works well for me, but play around.) Open `usr/share/applications/rstudio.desktop` with your preferred text editor as root. Then change the first line to:
 
@@ -251,7 +252,7 @@ Exec=env QT_SCALE_FACTOR=0.75 /usr/bin/rstudio-bin %F
 
 Next time you launch RStudio, all of the fonts (including menu items) should now be correctly scaled.
 
-#### Texstudio
+####  5.1.2. <a name='Texstudio'></a>Texstudio
 
 This one took a little bit of troubleshooting. Everything was way too big initially. To fix, first go to _Options > Configure TeXstudio > Adv. Editor > Hacks/Workarounds_. (Note: Make sure the "Show Advanced Options" box at the bottom of the configure panel is checked.) Uncheck _Try to automatically choose best display options_. Then, change _Render Mode_ to "Qt". Cick OK and close TeXstudio.
 
@@ -263,7 +264,7 @@ Exec=env QT_SCALE_FACTOR=0.5 texstudio %F
 
 Re-open Texstudio and bath in the serenity of your correctly scaled workspace.
 
-#### Linux console font
+####  5.1.3. <a name='Linuxconsolefont'></a>Linux console font
 
 Another thing I'll add explicitly here is how to change the default Linux Console font that appears when booting up (or when booting into TTY). First download the terminus fonts family:
 ```sh
@@ -280,17 +281,17 @@ To set this font permanently, open `/etc/vconsole.conf` with nano and add
 FONT=ter-132n
 ```
 
-### Tilix
+###  5.2. <a name='Tilix'></a>Tilix
 
 I prefer [Tilix](https://gnunn1.github.io/tilix-web/) to the default Gnome terminal. The old way of changing the default terminal no longer works in the latest versions of Gnome (see [here](https://bbs.archlinux.org/viewtopic.php?id=246952)). But a simple solution that covers most use cases is to modify the "Ctrl+Alt+T" shortcut. Go to `Settings > Devices > Keyboard Shortcuts`. At the bottom, change the "Terminal" command entry to "tilix" (from gnome-terminal).
 
 `gnome-terminal`
 
-### Printing
+###  5.3. <a name='Printing'></a>Printing
 
 My home printer had been found automatically at first. However, I couldn't find it after a while for some reason. Adding it manually was a pain, because I didn't have the correct permissions in CUPS. (Adding myself to the "cups" user group didn't work either.) I solved the problem by following [these instructions](https://kernelmastery.com/enable-regular-users-to-add-printers-to-cups/).
 
-### Wi-fi from Shell/TTY
+###  5.4. <a name='Wi-fifromShellTTY'></a>Wi-fi from Shell/TTY
 
 Relevant to cases where you need to log into the Shell/TTY to fix some hanging/freeze problem (e.g. CUDA/NVIDIA above). The easiest way I've found is to use `nmcli` (command line version of network manger). To see the available SSIDs type
 ```sh
@@ -301,7 +302,7 @@ Then connect with
 $ nmcli dev wifi connect SSID_NAME password SSID_PASSWORD
 ```
 
-### Starting Gnome session from Shell/TTY
+###  5.5. <a name='StartingGnomesessionfromShellTTY'></a>Starting Gnome session from Shell/TTY
 
 Similar rationale to the above:
 ```sh
@@ -313,7 +314,7 @@ Alternatively, launch via GDM:
 $ sudo systemctl start gdm
 ```
 
-### Manually compile a package from source with edited PKGBUILD (Julia example)
+###  5.6. <a name='ManuallycompileapackagefromsourcewitheditedPKGBUILDJuliaexample'></a>Manually compile a package from source with edited PKGBUILD (Julia example)
 
 I initally installed [Julia](https://julialang.org/) via the Arch community repos. However, a build problem cropped up when upgrading to Julia 1.2.0; see [bug report](https://bugs.archlinux.org/task/63536?project=5&string=julia) and [GitHub issue](https://github.com/JuliaLang/julia/issues/33038). I ultimately took this as a sign to install the official Julia binaries instead. (See [above](#julia).) However, this also seemed like a good chance to practice compiling a package from the community repos with an edited PKGBUILD. There's suprisingly little guidance about this online, although [this Manjaro forum thread](https://forum.manjaro.org/t/how-to-install-pkgbuild-file-downloaded-manually/69365/2) proved very helpful. My full steps as follows:
 
@@ -340,11 +341,11 @@ $ sudo pacman -U julia-2:1.2.0-1-x86_64.pkg.tar
 $ julia
 ```
 
-### Touchpad
+###  5.7. <a name='Touchpad'></a>Touchpad
 
 _Note: Only relevant for the Plasma DE, which I'm no longer using._ The KDE graphical touchpad settings (*System Settings > Input Devices > Touchpad*) didn't seem to last and kept reverting back to the default behaviour. So I [installed](https://wiki.archlinux.org/index.php/Libinput#Installation) `libinput` and then followed the final section of [this guide](https://www.dell.com/support/article/us/en/04/sln308258/precision-xps-ubuntu-general-touchpad-mouse-issue-fix?lang=en) (See Fig. 7) to get tapping, right-click two finger tap, etc. working.
 
-### Removing Antergos
+###  5.8. <a name='RemovingAntergos'></a>Removing Antergos
 
 Following the [resolution of the Antergos Project](https://antergos.com/blog/antergos-linux-project-ends/), I removed all (or, at least, most) of the residual Antergos libraries following [these](https://forum.antergos.com/topic/11878/antefree-gnome) [guides](https://forum.antergos.com/topic/11887/antefree-gnome-cleaning-from-aur). This leaves a pure Arch system.
 
