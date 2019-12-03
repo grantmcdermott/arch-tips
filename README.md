@@ -147,6 +147,14 @@ Reinstallation of R packages is already much quicker thanks to [ccache](https://
 $ echo 'options(Ncpus=parallel::detectCores())' >> ~/.Rprofile
 ```
 
+#### Reinstall R packages after OpenBLAS update
+
+An optimised BLAS library like OpenBLAS or MKL yields significant speed improvements. One [downside](https://twitter.com/grant_mcdermott/status/1199830893981884416) is that upgrading OpenBLAS requires manual reinstallation of the linked R packages. Trying to load the **sf** or **lfe** packages for example, will prompt the following error message: `libopenblas.so.3: cannot open shared object file: No such file of directory`
+
+(Reason: R itself loads the packages and so they are "hidden" from the OS. This means that the normal OS resolution of dynamic library loading after an update &mdash; via `$ ldconfig` and co. &mdash; doesn't work.)
+
+It's possible to fix this problem through trial and error; i.e. simply reinstall any package that prompts the above loading error manually. However, a much better way is to do everything in one fell swoop with [this script](https://gist.github.com/mllg/b9c75ded211df7df58942c5d647b9c43) from [Michael Lang](https://twitter.com/michellangts/status/1199990600919064576).
+
 ### conda (Python)
 
 Following [Jake Vanderplas](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations), I opted for Miniconda instead of the full-blown Anaconda install.
