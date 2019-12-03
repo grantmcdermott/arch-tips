@@ -272,6 +272,12 @@ To set this font permanently, open `/etc/vconsole.conf` with nano and add
 FONT=ter-132n
 ```
 
+### Tilix
+
+I prefer [Tilix](https://gnunn1.github.io/tilix-web/) to the default Gnome terminal. The old way of changing the default terminal no longer works in the latest versions of Gnome (see [here](https://bbs.archlinux.org/viewtopic.php?id=246952)). But a simple solution that covers most use cases is to modify the "Ctrl+Alt+T" shortcut. Go to `Settings > Devices > Keyboard Shortcuts`. At the bottom, change the "Terminal" command entry to "tilix" (from gnome-terminal).
+
+`gnome-terminal`
+
 ### Printing
 
 My home printer had been found automatically at first. However, I couldn't find it after a while for some reason. Adding it manually was a pain, because I didn't have the correct permissions in CUPS. (Adding myself to the "cups" user group didn't work either.) I solved the problem by following [these instructions](https://kernelmastery.com/enable-regular-users-to-add-printers-to-cups/).
