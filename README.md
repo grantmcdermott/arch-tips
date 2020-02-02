@@ -11,22 +11,22 @@ Changelog and customization tips for my Arch Linux system, which is running on a
 	- [UEFI prep](#uefi-prep)
 	- [Tip: Use a distribution](#tip-use-a-distribution)
 	- [Home folder on separate partition (after install)](#home-folder-on-separate-partition-after-install)
-- [NVIDIA GPU](#nvidia-gpu)
+- [NVIDIA GPU](#NVIDIAGPU)
 - [Backup](#backup)
-- [Data science setup](#data-science-setup)
+- [Data science setup](#Datasciencesetup)
 	- [R](#r)
 	- [conda (Python)](#conda-python)
 	- [Julia](#julia)
-	- [GPU-enabled deep-learning (TensorFlow, CUDA, etc.)](#gpu-enabled-deep-learning-tensorflow-cuda-etc)
+	- [GPU-enabled deep-learning (TensorFlow, CUDA, etc.)](#GPU-enableddeep-learningTensorFlowCUDAetc.)
 - [Miscellaneous](#miscellaneous)
 	- [HiDPI](#hidpi)
 	- [Tilix](#Tilix)
 	- [Printing](#printing)
 	- [Wi-fi from Shell/TTY](#wi-fi-from-shelltty)
 	- [Starting Gnome session from Shell/TTY](#starting-gnome-session-from-shelltty)
-	- [Manually compile a package from source with edited PKGBUILD (Julia example)](#manually-compile-a-package-from-source-with-edited-pkgbuild-julia-example)
+	- [Manually compile a package from source with edited PKGBUILD (Julia example)](#ManuallycompileapackagefromsourcewitheditedPKGBUILDJuliaexample)
 	- [Touchpad](#touchpad)
-	- [Removing Antergos](#removing-antergos)
+	- [Removing Antergos](#RemovingAntergos)
 
 <!-- /TOC -->
 
@@ -155,6 +155,15 @@ An optimised BLAS library like OpenBLAS or MKL yields significant speed improvem
 (Reason: R itself loads the packages and so they are "hidden" from the OS. This means that the normal OS resolution of dynamic library loading after an update &mdash; via `$ ldconfig` and co. &mdash; doesn't work.)
 
 It's possible to fix this problem through trial and error; i.e. simply reinstall any package that prompts the above loading error manually. However, a much better way is to do everything in one fell swoop with [this script](https://gist.github.com/mllg/b9c75ded211df7df58942c5d647b9c43) from [Michael Lang](https://twitter.com/michellangts/status/1199990600919064576).
+
+#### 4.1.4 <a name='radian'></a> radian (advanced R console)
+
+Patrick mentions in [radian](https://github.com/randy3k/radian) &mdash; a modern R console with a bunch of nice features &dash; in his guide. This entry is just to note that I needed to update my PATH, so as to include the location where the radian source script was installed. (I was duly notified about this during the pip installation).
+
+```sh
+$ echo 'export PATH="/home/grant/.local/bin:$PATH"' >> .zshrc
+$ source ~/.zshrc
+```
 
 ###  4.2. <a name='condaPython'></a>conda (Python)
 
