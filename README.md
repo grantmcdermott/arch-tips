@@ -17,6 +17,7 @@ Changelog and customization tips for my Arch Linux system, which is running on a
   - [GPU-enabled deep-learning (TensorFlow, CUDA, etc.)](#gpu-enabled-deep-learning-tensorflow-cuda-etc)
 - [Miscellaneous](#miscellaneous)
   - [HiDPI](#hidpi)
+  - [MS Outlook (and other Office 365 apps)](#ms-outlook-and-other-office-365-apps)
   - [Tilix](#tilix)
   - [Printing](#printing)
   - [Shell/TTY](#shelltty)
@@ -283,6 +284,70 @@ To set this font permanently, open `/etc/vconsole.conf` with nano and add
 ```
 FONT=ter-132n
 ```
+
+### MS Outlook (and other Office 365 apps)
+
+My university mail system runs on MS Outlook (Exchange). While it's certainly possible to connect to the Exchange system using standard Linux mail apps like Evolution, Thunderbird, etc., I enountered slight (and slightly annoying) delays across my devices. Luckily, it's now possible to run Outlook &mdash; or, indeed, any other web app &mdash; "natively" on Linux thanks to [**nativefier**](https://github.com/jiahaog/nativefier). On Arch, there's even an [AUR package](https://aur.archlinux.org/packages/ms-office-online-nativefier/) that installs the whole Office 365 suite for you. However, I opted to install and configure a nativefied Outlook app myself, so that I could run it as a separate entity. (It's not *really* separate as you can still switch between the different Office 365 apps, but you get the point.) Start by installing the Node.js nativefier command line tool.
+
+```sh
+$ npm install nativefier -g
+## Or, use the packaged AUR version: https://aur.archlinux.org/packages/nodejs-nativefier/
+# $ pac install nodejs-nativefier
+```
+
+Next, create the app
+
+```sh
+$ nativefier -n "Outlook-Office365" --maximize --show-menu-bar --internal-urls ".*(office|office365|sharepoint|microsoft|onenote)\.(com).*" --tray --counter --single-instance 'https://outlook.office.com/owa'
+```
+
+This will create a folder called `outlook-office-365-linux-x64` in your current directory containing all of the scaffolding needed to run the Outlook app. So you can start Outlook from the shell simply by calling 
+
+```sh
+$ ./outlook-office-365
+```
+
+At this point, everything is good to go. (Simple!) However, I wanted to make some additional configurations, so that Outlook could be run as a regular desktop app in Gnome (i.e. click to open) and also fix some HiDPI scaling issues. There are some good resources for how to do this (e.g. [this](https://www.leowkahman.com/2018/03/22/running-whatsapp-allo-todoist-onenote-on-ubuntu/) one for Ubuntu), but here's a quick rundown of my own steps. The first step is optional, but moving the folder to `/opt` allows other users to access the new Outlook app too.
+
+```sh
+$ sudo mv outlook-office-365-linux-x64 /opt ## Optional: Move the app folder to /opt
+```
+
+Next, you want to find the hexidemical (6-character) "suffix" associated with your particular app instance. This hexidecimal string represents the so-called `WMClass` property of your app, preserving your session state so that you don't need to keeping logging in every time. From a practical perspective, finding the `WMClass` string will prevent additional Outlook icons from popping up in your desktop launcher whenever you start the app. (More [here](https://github.com/jiahaog/nativefier/issues/204#issuecomment-287615617) and [here]((https://askubuntu.com/a/367851)).) There are a couple of ways to find the `WMClass`, but the simplest is probably just to start the app if you haven't already (`$ /opt/outlook-office-365-linux-x64/outlook-office-365 `). Then, run the following command in your terminal and click on your Outlook app window.
+
+```sh
+## Run this command and then click on your open Outlook app window
+$ xprop WM_CLASS
+## Should return shomething like: 
+## WM_CLASS(STRING) = "outlook-office-365-nativefier-xxxxxx", "outlook-office-365-nativefier-xxxxxx"
+```
+Now that you have the `WM_CLASS`, we can create our desktop app. Create the app by running
+
+```sh
+$ sudo nano /usr/share/applications/ms-outlook.desktop
+```
+and then pasting across the entry text below. Don't forget to replace `xxxxxx` in the bottom line with your actual `WM_CLASS` string. (Also: Drop `--force-device-scale-factor=2` flag if you aren't on a HiDPI machine.)
+
+```sh
+[Desktop Entry]
+Name=MS Outlook
+Comment=MS Outlook (nativefier)
+GenericName=Outlook
+Exec=/opt/outlook-office-365-linux-x64/outlook-office-365 --force-device-scale-factor=2
+Terminal=false
+Type=Application
+Icon=/opt/outlook-office-365-linux-x64/resources/app/icon.png
+StartupNotify=true
+StartupWMClass=outlook-office-365-nativefier-xxxxxx
+```
+Save and close (`Ctrl+X`, `y`). Finally, update your icon cache.
+
+```sh
+## Change to your default theme locationas needed
+$ sudo gtk-update-icon-cache /usr/share/icons/hicolor -f
+```
+
+You should now able to launch Outlook like any desktop app (e.g. using the super key in Gnome and search for "outlook"). It can also be added to your launcher favourites in the usual way. 
 
 ### Tilix
 
