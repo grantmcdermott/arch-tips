@@ -347,7 +347,7 @@ Save and close (`Ctrl+X`, `y`). Finally, update your icon cache.
 $ sudo gtk-update-icon-cache /usr/share/icons/hicolor -f
 ```
 
-You should now able to launch Outlook like any desktop app (e.g. using the super key in Gnome and search for "outlook"). It can also be added to your launcher favourites in the usual way. 
+You should now able to launch Outlook like any desktop app (e.g. using the super key in Gnome and search for "outlook"). It can also be added to your launcher favourites in the usual way. (See my desktop screenshot at the top of this README.)
 
 ### Tilix
 
