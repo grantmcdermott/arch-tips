@@ -313,7 +313,7 @@ At this point, everything is good to go. (Simple!) However, I wanted to make som
 $ sudo mv outlook-office-365-linux-x64 /opt ## Optional: Move the app folder to /opt
 ```
 
-Next, you want to find the hexidemical (6-character) "suffix" associated with your particular app instance. This hexidecimal string represents the so-called `WMClass` property of your app, preserving your session state so that you don't need to keeping logging in every time. From a practical perspective, finding the `WMClass` string will prevent additional Outlook icons from popping up in your desktop launcher whenever you start the app. (More [here](https://github.com/jiahaog/nativefier/issues/204#issuecomment-287615617) and [here]((https://askubuntu.com/a/367851)).) There are a couple of ways to find the `WMClass`, but the simplest is probably just to start the app if you haven't already (`$ /opt/outlook-office-365-linux-x64/outlook-office-365 `). Then, run the following command in your terminal and click on your Outlook app window.
+Next, you want to find the hexidemical (6-character) "suffix" associated with your particular app instance. This hexidecimal string represents the so-called `WMClass` property of your app, preserving your session state so that you don't need to keeping logging in every time. From a practical perspective, finding the `WMClass` string will prevent additional Outlook icons from popping up in your desktop launcher whenever you start the app. (More [here](https://github.com/jiahaog/nativefier/issues/204#issuecomment-287615617) and [here](https://askubuntu.com/a/367851).) There are a couple of ways to find the `WMClass`, but the simplest is probably just to start the app if you haven't already (`$ /opt/outlook-office-365-linux-x64/outlook-office-365`). Then, run the following command in your terminal and click on your Outlook app window.
 
 ```sh
 ## Run this command and then click on your open Outlook app window
@@ -321,12 +321,12 @@ $ xprop WM_CLASS
 ## Should return shomething like: 
 ## WM_CLASS(STRING) = "outlook-office-365-nativefier-xxxxxx", "outlook-office-365-nativefier-xxxxxx"
 ```
-Now that you have the `WM_CLASS`, we can create our desktop app. Create the app by running
+Now that you have the `WM_CLASS`, we can create our desktop app entry. Create a new `ms-outlook.desktop` file by running
 
 ```sh
 $ sudo nano /usr/share/applications/ms-outlook.desktop
 ```
-and then pasting across the entry text below. Don't forget to replace `xxxxxx` in the bottom line with your actual `WM_CLASS` string. (Also: Drop the `--force-device-scale-factor=2` flag if you aren't on a HiDPI machine.)
+and then pasting across the below text chunk. Don't forget to replace `xxxxxx` in the bottom line with your actual `WM_CLASS` string. (Also: Drop the `--force-device-scale-factor=2` flag if you aren't on a HiDPI machine.)
 
 ```sh
 [Desktop Entry]
