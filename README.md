@@ -326,7 +326,7 @@ Now that you have the `WM_CLASS`, we can create our desktop app. Create the app 
 ```sh
 $ sudo nano /usr/share/applications/ms-outlook.desktop
 ```
-and then pasting across the entry text below. Don't forget to replace `xxxxxx` in the bottom line with your actual `WM_CLASS` string. (Also: Drop `--force-device-scale-factor=2` flag if you aren't on a HiDPI machine.)
+and then pasting across the entry text below. Don't forget to replace `xxxxxx` in the bottom line with your actual `WM_CLASS` string. (Also: Drop the `--force-device-scale-factor=2` flag if you aren't on a HiDPI machine.)
 
 ```sh
 [Desktop Entry]
