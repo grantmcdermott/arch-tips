@@ -104,10 +104,13 @@ PS &mdash; As noted above, my working NVIDIA setup only came after various miste
 
 Very easy with rsync. See [this video](https://www.youtube.com/watch?v=oS5uH0mzMTg).
 
+Given my external hard drive &mdash; which I named "PrecisionBackup", but for some reason is called "PrecisionBackup1" under the /media/ mount point &mdash; first do a dry run with:
+
 ```sh
 $ bash ## zsh doesn't work for some reason
-$ sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclude=/sys/* --exclude=/tmp/* --exclude=/run/* --exclude=/mnt/* --exclude=/media/* --exclude="swapfile" --exclude="lost+found" --exclude=".cache" --exclude=".VirtualBoxVMs" --exclude=".ecryptfs" / /run/media/grant/PrecisionBackup
+$ sudo rsync -aAXv --delete --dry-run --exclude=/dev/* --exclude=/proc/* --exclude=/sys/* --exclude=/tmp/* --exclude=/run/* --exclude=/mnt/* --exclude=/media/* --exclude="swapfile" --exclude="lost+found" --exclude=".cache" --exclude=".VirtualBoxVMs" --exclude=".ecryptfs" / /run/media/grant/PrecisionBackup1
 ```
+Exclude the `--dry-run` flag when you're read to go for real. (Update: I probably could/should have exclude the `/var/lib/docker/*` directory too to save space.)
 
 ## Data science setup
 
@@ -248,10 +251,10 @@ The [Arch wiki](https://wiki.archlinux.org/index.php/HiDPI) has the goods here. 
 
 #### RStudio
 
-Annoyingly, I added a wiki section on RStudio HiDPI scaling that was removed by a mod for reasons that make [absolutely no sense](https://wiki.archlinux.org/index.php?title=HiDPI&diff=586566&oldid=586565). At any rate if your RStudio fonts are too big, try editing the RStudio desktop app so that it recognizes an appropriate QT_SCALE_FACTOR environment variable. (A scaling of 0.75 works well for me, but play around.) Open `/usr/share/applications/rstudio.desktop` with your preferred text editor as root. Then change the first line to:
+Annoyingly, I added a wiki section on RStudio HiDPI scaling that was removed by a mod for reasons that make [absolutely no sense](https://wiki.archlinux.org/index.php?title=HiDPI&diff=586566&oldid=586565). At any rate if your RStudio fonts are too big, try editing the RStudio desktop app so that it recognizes an appropriate QT_SCALE_FACTOR environment variable. (A scaling of 0.5 works well for me, but play around.) Open `/usr/share/applications/rstudio.desktop` with your preferred text editor as root. Then change the first line to:
 
 ```
-Exec=env QT_SCALE_FACTOR=0.75 /usr/bin/rstudio-bin %F
+Exec=env QT_SCALE_FACTOR=0.5 /usr/bin/rstudio-bin %F
 ```
 
 Next time you launch RStudio, all of the fonts (including menu items) should now be correctly scaled.
