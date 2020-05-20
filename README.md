@@ -247,6 +247,8 @@ use_condaenv("tf_gpu") ## Now build your DL model...
 
 ### HiDPI
 
+**Update** I've written a [shell script](https://gist.github.com/grantmcdermott/fa3c90179f7b5613dcf267745bf07081) that automates a lot of the steps outlined below. Just run `$ sudo bash hidpi.sh`. Particularly useful after sytem/application updates, since it saves have to do everything manually.
+
 The [Arch wiki](https://wiki.archlinux.org/index.php/HiDPI) has the goods here. I've even added a few sections for things that I had to troubleshoot. (E.g. Gnome Shell text scaling for Xorg sessions, although I primarily use Wayland.) Here are some additional things beyond that:
 
 #### RStudio
