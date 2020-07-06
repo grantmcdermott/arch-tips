@@ -12,7 +12,7 @@ Changelog and customization tips for my Arch Linux system, which is running on a
 - [Backup](#backup)
 - [Data science setup](#data-science-setup)
   - [R](#r)
-  - [conda (Python)](#conda-python)
+  - [Python (conda)](#python-conda)
   - [Julia](#julia)
   - [GPU-enabled deep-learning (TensorFlow, CUDA, etc.)](#gpu-enabled-deep-learning-tensorflow-cuda-etc)
 - [Miscellaneous](#miscellaneous)
@@ -163,7 +163,7 @@ $ echo 'export PATH="/home/grant/.local/bin:$PATH"' >> .zshrc
 $ source ~/.zshrc
 ```
 
-### conda (Python)
+### Python (conda)
 
 Following [Jake Vanderplas](https://jakevdp.github.io/PythonDataScienceHandbook/00.00-preface.html#Installation-Considerations), I opted for Miniconda instead of the full-blown Anaconda install.
 
@@ -172,7 +172,7 @@ Following [Jake Vanderplas](https://jakevdp.github.io/PythonDataScienceHandbook/
 In most cases, your conda environment should automatically get added to your PATH. However I installed Miniconda3 using bash before switching over to the zsh shell. As a result, I had to add the Miniconda directory to the zsh PATH environment variable (see [here](https://stackoverflow.com/a/35246794)).
 
 ```sh
-$ echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> .zshrc
+$ echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> ~/.zshrc
 $ source ~/.zshrc ## Or you can just close and reopen the shell
 ```
 
@@ -201,6 +201,23 @@ Necessary, for example, when I wanted to add the Apache Arrow C++ module from Co
 $ conda config --add channels conda-forge
 $ conda config --set channel_priority strict
 ```
+
+#### JAX
+
+I already have a GPU-enable CUDA installation (see [below](#gpu-enabled-deep-learning-tensorflow-cuda-etc)), so opted for the [JAX](https://github.com/google/jax) version that comes with both CPU and GPU support. For some reason, JAX expects CUDA to be located at `/usr/local/cuda-X.X`, so I first had to symlink with my actual CUDA install location.
+
+```sh
+$ sudo ln -s /opt/cuda /usr/local/cuda-10.2
+```
+
+(The JAX installation guide also suggests the possibility of using an `XLA_FLAGS` environment variable to solve this problem, but that didn't work for me. More [here](https://github.com/google/jax/issues/989#issuecomment-654423424).)
+
+After that, I just used the suggested shell command to auto-install the right JAX version for my system.
+
+```sh
+$ pip install --upgrade https://storage.googleapis.com/jax-releases/`nvidia-smi | sed -En "s/.* CUDA Version: ([0-9]*)\.([0-9]*).*/cuda\1\2/p"`/jaxlib-0.1.51-`python3 -V | sed -En "s/Python ([0-9]*)\.([0-9]*).*/cp\1\2/p"`-none-manylinux2010_x86_64.whl jax
+```
+
 
 ### Julia
 
