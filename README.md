@@ -338,7 +338,7 @@ $ npm install nativefier -g
 Next, create the app
 
 ```sh
-$ nativefier -n "Outlook-Office365" --maximize --show-menu-bar --internal-urls ".*(office|office365|sharepoint|microsoft|onenote)\.(com).*" --tray --counter --single-instance 'https://outlook.office.com/owa'
+$ nativefier -n "Outlook-Office365" --maximize --show-menu-bar --internal-urls ".*(office|office365|sharepoint|microsoft|onenote|microsoftazuread-sso|microsoftonline)\.(com).*" --tray --counter --single-instance 'https://outlook.office.com/owa'
 ```
 
 This will create a folder called `outlook-office-365-linux-x64` in your current directory containing all of the scaffolding needed to run the Outlook app. So you can start Outlook from the shell simply by calling 
