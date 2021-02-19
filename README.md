@@ -226,6 +226,24 @@ There's a distributed version of Julia via the Arch community repos, but I event
 ```sh
 $ sudo bash -ci "$(curl -fsSL https://raw.githubusercontent.com/abelsiqueira/jill/master/jill.sh)"
 ```
+#### Fix `GLIBCXX_3.4.26 not found` error (RCall)
+
+This is a known issue. See: https://discourse.julialang.org/t/glibcxx-3-4-26-not-found-in-rcall/29113/11
+
+First ID which version of JUlia is being used/symlinked.
+
+```sh
+readlink -f /usr/local/bin/julia
+```
+
+For example, gives me `/opt/julias/julia-1.5-latest/bin/julia`. So the file I need to replace is `/opt/julias/julia-1.5-latest/lib/julia/libstdc++.so.6
+`. I created a backup first just in case.
+
+```
+JULIA_HOME="/opt/julias/julia-1.5-latest"
+sudo mv $JULIA_HOME/lib/julia/libstdc++.so.6 $JULIA_HOME/lib/julia/libstdc++.so.6_backup
+sudo cp /usr/lib/libstdc++.so.6 $JULIA_HOME/lib/julia/
+```
 
 ### GPU-enabled deep-learning (TensorFlow, CUDA, etc.)
 
