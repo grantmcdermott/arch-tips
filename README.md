@@ -37,6 +37,7 @@ You can, of course, build Arch from scratch. But not everyone ~~is a masochist~~
 
 - [EndeavourOS](https://endeavouros.com/): Picking up where the super Antergos community left off. Comes with all of the benefits of a bleeding-edge Arch setup without the pain. This would be my first choice if I were starting anew.
 - [Manjaro](https://manjaro.org/): Another good option that a lot of people swear by. (Note, this is actually a derivative of Arch with its own repositories, etc.)
+- [Garuda](https://garudalinux.org/): This is an opinionated Arch derivative, with an emphasis on workstation performance, for example by using the Zen kernel. Lots of defaults are set up for the user, including btrfs and snapper for automatic snapshot backups.
 
 ### Home folder on separate partition (after install)
 
