@@ -160,7 +160,7 @@ It's possible to fix this problem through trial and error; i.e. simply reinstall
 Patrick mentions in [radian](https://github.com/randy3k/radian) &mdash; a modern R console with a bunch of nice features &dash; in his guide. This entry is just to note that I needed to update my PATH, so as to include the location where the radian source script was installed. (I was duly notified about this during the pip installation).
 
 ```sh
-$ echo 'export PATH="/home/grant/.local/bin:$PATH"' >> .zshrc
+$ echo 'export PATH="$HOME/.local/bin:$PATH"' >> .zshrc
 $ source ~/.zshrc
 ```
 
@@ -173,7 +173,7 @@ Following [Jake Vanderplas](https://jakevdp.github.io/PythonDataScienceHandbook/
 In most cases, your conda environment should automatically get added to your PATH. However I installed Miniconda3 using bash before switching over to the zsh shell. As a result, I had to add the Miniconda directory to the zsh PATH environment variable (see [here](https://stackoverflow.com/a/35246794)).
 
 ```sh
-$ echo 'export PATH="/home/grant/miniconda3/bin:$PATH"' >> ~/.zshrc
+$ echo 'export PATH="$HOME/miniconda3/bin:$PATH"' >> ~/.zshrc
 $ source ~/.zshrc ## Or you can just close and reopen the shell
 ```
 
