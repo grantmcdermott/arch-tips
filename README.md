@@ -268,7 +268,7 @@ $ pac install tensorflow-cuda python-tensorflow-cuda
 
 #### R
 
-Finally, you can go through the excellent [tensorflow and keras](https://tensorflow.rstudio.com/) packages built for R. These allow for various installation options depending on your setup, as well as multiple installations for different Python virtual environments.
+Finally, you can go through the excellent [tensorflow and keras](https://tensorflow.'.com/) packages built for R. These allow for various installation options depending on your setup, as well as multiple installations for different Python virtual environments.
 
 For example, the default `install_keras(tensorflow = "gpu")` approach will download and install everything to a new virtual environment located at `~/.virtualenvs/r-reticulate`.
 
@@ -296,6 +296,16 @@ Exec=env QT_SCALE_FACTOR=0.5 /usr/bin/rstudio-bin %F
 ```
 
 Next time you launch RStudio, all of the fonts (including menu items) should now be correctly scaled.
+
+### Required packages
+
+Rstudio has started to require OpenSSL 1.1 (the package is called openssl-1.1). It's not enough to have the latest version of OpenSSL installed. The error you'll see is the following when trying to launch Rstudio from the terminal (GUI will just fail):
+
+```
+rstudio: error while loading shared libraries: libcrypto.so.1.1: cannot open shared object file: No such file or directory
+```
+
+
 
 #### Texstudio
 
