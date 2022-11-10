@@ -297,6 +297,16 @@ Exec=env QT_SCALE_FACTOR=0.5 /usr/bin/rstudio-bin %F
 
 Next time you launch RStudio, all of the fonts (including menu items) should now be correctly scaled.
 
+### Required packages
+
+Rstudio has started to require OpenSSL 1.1 (the package is called openssl-1.1). It's not enough to have the latest version of OpenSSL installed. The error you'll see is the following when trying to launch Rstudio from the terminal (GUI will just fail):
+
+```
+rstudio: error while loading shared libraries: libcrypto.so.1.1: cannot open shared object file: No such file or directory
+```
+
+
+
 #### Texstudio
 
 This one took a little bit of troubleshooting. Everything was way too big initially. To fix, first go to _Options > Configure TeXstudio > Adv. Editor > Hacks/Workarounds_. (Note: Make sure the "Show Advanced Options" box at the bottom of the configure panel is checked.) Uncheck _Try to automatically choose best display options_. Then, change _Render Mode_ to "Qt". Cick OK and close TeXstudio.
