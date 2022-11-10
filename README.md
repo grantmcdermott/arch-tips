@@ -268,7 +268,7 @@ $ pac install tensorflow-cuda python-tensorflow-cuda
 
 #### R
 
-Finally, you can go through the excellent [tensorflow and keras](https://tensorflow.'.com/) packages built for R. These allow for various installation options depending on your setup, as well as multiple installations for different Python virtual environments.
+Finally, you can go through the excellent [tensorflow and keras](https://tensorflow.rstudio.com/) packages built for R. These allow for various installation options depending on your setup, as well as multiple installations for different Python virtual environments.
 
 For example, the default `install_keras(tensorflow = "gpu")` approach will download and install everything to a new virtual environment located at `~/.virtualenvs/r-reticulate`.
 
